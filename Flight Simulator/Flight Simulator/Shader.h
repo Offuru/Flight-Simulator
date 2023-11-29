@@ -22,7 +22,6 @@ private:
 
 	void CheckCompileErrors(GLuint shader, const std::string& type);
 
-
 	GLuint m_ID;
 
 };
