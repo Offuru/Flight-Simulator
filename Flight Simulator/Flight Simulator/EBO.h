@@ -7,10 +7,10 @@ class EBO
 {
 public:
 
-	EBO() = default;
-	EBO(std::vector<GLuint> indices);
+	EBO();
 	~EBO();
 
+	void Initialize(std::vector<GLuint>& indices);
 	void Bind();
 	void Unbind();
 

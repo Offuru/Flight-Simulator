@@ -6,10 +6,10 @@ class VBO
 {
 public:
 	
-	VBO() = default;
-	VBO(std::vector<GLfloat> vertices);
+	VBO();
 	~VBO();
 
+	void Initialize(std::vector<GLfloat>& vertices);
 	void Bind();
 	void Unbind();
 
