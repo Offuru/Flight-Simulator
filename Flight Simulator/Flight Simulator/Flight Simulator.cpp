@@ -76,8 +76,6 @@ public:
 	void Render(const glm::mat4& model)
 	{
 		vao.Bind();
-		vbo.Bind();
-		ebo.Bind();
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		vao.Unbind();
 		vbo.Unbind();
