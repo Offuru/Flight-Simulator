@@ -30,6 +30,12 @@
     <ClCompile Include="EBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -44,12 +50,30 @@
     <ClInclude Include="EBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="testShader.vs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="testShader.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PhongLight.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PhongLight.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Lamp.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Lamp.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
