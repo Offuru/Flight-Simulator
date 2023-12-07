@@ -21,6 +21,7 @@
 #include "EBO.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "LightSource.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -204,13 +205,12 @@ int main() {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	Shader cubeShader("PhongLight.vs", "PhongLight.fs");
-
-	/*Cube cube1{ glm::vec3{0.f,0.f,-1.f}, 1.f };
-	Cube cube2{ glm::vec3{-1.f,1.f,-1.f}, 1.f };*/
-	
+	glm::vec3 lightPos(3.0f, 0.0f, 0.0f);
 	Cube cube{ glm::vec3{1.f,0.f,-1.f}, 1.f };
-	glm::vec3 lightPos{ 2.5f,1.f,-1.0f };
+	LightSource light{ lightPos, 0.5f };
+
+	Shader cubeShader("PhongLight.vs", "PhongLight.fs");
+	Shader lightShader("Lamp.vs", "Lamp.fs");
 
 	while (!glfwWindowShouldClose(window)) {
 		double currentFrame = glfwGetTime();
@@ -227,6 +227,10 @@ int main() {
 		
 		glm::mat4 model = glm::scale(glm::mat4(1.0), glm::vec3(3.0f));
 		cube.Render(cubeShader, model, pCamera, lightPos, Ka, Kd, Ks, spec);
+
+		model = glm::translate(glm::mat4(1.0), lightPos);
+		model = glm::scale(model, glm::vec3(0.05f));
+		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -267,10 +271,8 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
-		std::cout << "\nUPPPPPPPPPP PRESSED IN PROCESSINPUT\n";
-	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
