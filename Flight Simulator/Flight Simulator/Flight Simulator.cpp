@@ -20,6 +20,7 @@
 #include "VAO.h"
 #include "EBO.h"
 #include "Shader.h"
+#include "Camera.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -91,8 +92,19 @@ private:
 	std::vector<GLfloat> vertices;
 };
 
-int main() {
+Camera* pCamera = nullptr;
 
+// Time variables to manage the speed of the camera
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
+void processInput(GLFWwindow* window);
+
+
+int main() {
 	// glfw: initialize and configure
 	glewExperimental = GL_TRUE;
 	glfwInit();
@@ -109,25 +121,43 @@ int main() {
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
 	glewInit();
+
+	glEnable(GL_DEPTH_TEST);
+
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+	glm::vec3 initialCameraPosition = glm::vec3(0.0, 0.0, 3.0);
+	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	Shader shader("testShader.vs", "testShader.fs");
 
 	Cube cube1{ glm::vec3{0.f,0.f,-1.f}, 1.f };
 	Cube cube2{ glm::vec3{-1.f,1.f,-1.f}, 1.f };
 
-	GLuint testID, testID2;
-
 	while (!glfwWindowShouldClose(window)) {
+		double currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		processInput(window);
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		shader.setMat4("projection", pCamera->GetProjectionMatrix());
+		shader.setMat4("view", pCamera->GetViewMatrix());
 
-		shader.Use();
+		shader.use();
 
 		cube1.Render(glm::mat4(1.f));
 		cube2.Render(glm::mat4(1.f));
@@ -136,8 +166,74 @@ int main() {
 		glfwPollEvents();
 	}
 
+	delete pCamera;
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
 	return 0;
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	// Ensure that the function only responds when a key is pressed or held down
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+		switch (key) {
+		case GLFW_KEY_W:
+			pCamera->ProcessKeyboard(FORWARD, float(deltaTime));
+			break;
+		case GLFW_KEY_S:
+			pCamera->ProcessKeyboard(BACKWARD, float(deltaTime));
+			break;
+		case GLFW_KEY_A:
+			pCamera->ProcessKeyboard(LEFT, float(deltaTime));
+			break;
+		case GLFW_KEY_D:
+			pCamera->ProcessKeyboard(RIGHT, float(deltaTime));
+			break;
+		case GLFW_KEY_Q:
+			pCamera->ProcessKeyboard(DOWN, float(deltaTime));
+			break;
+		case GLFW_KEY_E:
+			pCamera->ProcessKeyboard(UP, float(deltaTime));
+			break;
+		}
+	}
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	pCamera->MouseControl((float)xpos, (float)ypos);
+
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yOffset)
+{
+	pCamera->ProcessMouseScroll((float)yOffset);
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
+		std::cout << "\nUPPPPPPPPPP PRESSED IN PROCESSINPUT\n";
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(LEFT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(UP, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		pCamera->Reset(width, height);
+
+	}
 }

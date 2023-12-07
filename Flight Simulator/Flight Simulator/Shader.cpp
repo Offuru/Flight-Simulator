@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <glm/fwd.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
@@ -40,18 +42,18 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vertexShaderCode, NULL);
 	glCompileShader(vertex);
-	CheckCompileErrors(vertex, "VERTEX");
+	checkCompileErrors(vertex, "VERTEX");
 
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fragmentShaderCode, NULL);
 	glCompileShader(fragment);
-	CheckCompileErrors(fragment, "FRAGMENT");
+	checkCompileErrors(fragment, "FRAGMENT");
 
 	m_ID = glCreateProgram();
 	glAttachShader(m_ID, vertex);
 	glAttachShader(m_ID, fragment);
 	glLinkProgram(m_ID);
-	CheckCompileErrors(m_ID, "PROGRAM");
+	checkCompileErrors(m_ID, "PROGRAM");
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
@@ -62,17 +64,17 @@ Shader::~Shader()
 	glDeleteProgram(m_ID);
 }
 
-void Shader::Use() const
+void Shader::use() const
 {
 	glUseProgram(m_ID);
 }
 
-GLuint Shader::GetID() const
+GLuint Shader::getID() const
 {
 	return m_ID;
 }
 
-void Shader::CheckCompileErrors(GLuint shader, const std::string& type)
+void Shader::checkCompileErrors(GLuint shader, const std::string& type)
 {
 	GLint success;
 	GLchar infoLog[1024];
@@ -90,4 +92,9 @@ void Shader::CheckCompileErrors(GLuint shader, const std::string& type)
 			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 		}
 	}
+}
+
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
