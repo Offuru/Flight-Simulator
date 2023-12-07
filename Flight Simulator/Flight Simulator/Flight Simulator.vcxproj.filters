@@ -58,5 +58,11 @@
     <None Include="testShader.fs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="PhongLight.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PhongLight.fs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

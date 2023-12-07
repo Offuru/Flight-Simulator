@@ -37,30 +37,30 @@ public:
 	{
 		vertices =
 		{
-			pos.x, pos.y, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y - length , pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y - length, pos.z,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y - length, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y - length, pos.z + length,		1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y, pos.z + length,								1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y + length, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x , pos.y + length, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y, pos.z,										1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y + length, pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y + length, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
 		};
 
 		indices =
 		{
-			0, 1, 2,
-			0, 2, 3,
-			4, 5, 6,
-			4, 6, 7,
-			0, 1, 5,
-			0, 5, 4,
-			0, 7, 4,
-			0, 3, 7,
-			2, 1, 5,
-			2, 5, 6,
-			3, 2, 6,
-			3, 6, 7
+			0,1,2,
+			0,2,3,
+			1,5,6,
+			1,6,2,
+			5,4,7,
+			5,7,6,
+			4,0,3,
+			4,3,7,
+			0,5,1,
+			0,4,5,
+			3,2,6,
+			3,6,7
 		};
 
 		vao.Bind();
@@ -74,13 +74,27 @@ public:
 		vao.Unbind();
 	}
 
-	void Render(const glm::mat4& model)
+	void Render(Shader& shader, const glm::mat4& model, Camera* pCamera, glm::vec3& lightPos, GLfloat& Ka, GLfloat& Kd, GLfloat& Ks, GLfloat& spec)
 	{
+		shader.use();
+		shader.setVec3("objectColor", 0.5f, 1.0f, 0.31f);
+		shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		shader.setVec3("lightPos", lightPos);
+		shader.setVec3("viewPos", pCamera->GetPosition());
+		shader.setValue("Kd", Kd);
+		shader.setValue("Ka", Ka);
+		shader.setValue("Ks", Ks);
+		shader.setValue("spec", spec);
+
+		shader.setMat4("projection", pCamera->GetProjectionMatrix());
+		shader.setMat4("view", pCamera->GetViewMatrix());
+
+		shader.setMat4("model", model);
+
 		vao.Bind();
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		vao.Unbind();
-		vbo.Unbind();
-		vao.Unbind();
+		//vao.Unbind();
 	}
 
 private:
@@ -93,6 +107,11 @@ private:
 };
 
 Camera* pCamera = nullptr;
+GLfloat Ka = 0.1;
+GLfloat Kd = 0.5;
+GLfloat Ks = 2;
+GLfloat spec = 2;
+
 
 // Time variables to manage the speed of the camera
 float deltaTime = 0.0f;
@@ -136,10 +155,13 @@ int main() {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	Shader shader("testShader.vs", "testShader.fs");
+	Shader cubeShader("PhongLight.vs", "PhongLight.fs");
 
-	Cube cube1{ glm::vec3{0.f,0.f,-1.f}, 1.f };
-	Cube cube2{ glm::vec3{-1.f,1.f,-1.f}, 1.f };
+	/*Cube cube1{ glm::vec3{0.f,0.f,-1.f}, 1.f };
+	Cube cube2{ glm::vec3{-1.f,1.f,-1.f}, 1.f };*/
+	
+	Cube cube{ glm::vec3{1.f,0.f,-1.f}, 1.f };
+	glm::vec3 lightPos{ 2.5f,1.f,-1.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		double currentFrame = glfwGetTime();
@@ -153,14 +175,9 @@ int main() {
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
-
-		shader.setMat4("projection", pCamera->GetProjectionMatrix());
-		shader.setMat4("view", pCamera->GetViewMatrix());
-
-		shader.use();
-
-		cube1.Render(glm::mat4(1.f));
-		cube2.Render(glm::mat4(1.f));
+		glm::mat4 model = glm::mat4(1.0);
+		//glm::mat4 model = glm::scale(glm::mat4(1.0), glm::vec3(3.0f));
+		cube.Render(cubeShader, model, pCamera, lightPos, Ka, Kd, Ks, spec);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -176,26 +193,7 @@ int main() {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	// Ensure that the function only responds when a key is pressed or held down
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-		switch (key) {
-		case GLFW_KEY_W:
-			pCamera->ProcessKeyboard(FORWARD, float(deltaTime));
-			break;
-		case GLFW_KEY_S:
-			pCamera->ProcessKeyboard(BACKWARD, float(deltaTime));
-			break;
-		case GLFW_KEY_A:
-			pCamera->ProcessKeyboard(LEFT, float(deltaTime));
-			break;
-		case GLFW_KEY_D:
-			pCamera->ProcessKeyboard(RIGHT, float(deltaTime));
-			break;
-		case GLFW_KEY_Q:
-			pCamera->ProcessKeyboard(DOWN, float(deltaTime));
-			break;
-		case GLFW_KEY_E:
-			pCamera->ProcessKeyboard(UP, float(deltaTime));
-			break;
-		}
+		
 	}
 }
 

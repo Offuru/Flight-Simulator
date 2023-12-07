@@ -158,6 +158,8 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="PhongLight.fs" />
+    <None Include="PhongLight.vs" />
     <None Include="testShader.fs" />
     <None Include="testShader.vs" />
   </ItemGroup>
