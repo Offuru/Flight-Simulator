@@ -37,16 +37,60 @@ public:
 	{
 		vertices =
 		{
-			pos.x, pos.y, pos.z + length,								1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y + length, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x , pos.y + length, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y, pos.z,										1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y + length, pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y + length, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
+		   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		   0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		   0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		   0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		   -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+		   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		   0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		   0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		   0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		   -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+		   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		   -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		   -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		   0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		   0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		   0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		   0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		   0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		   0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+		   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		   0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		   0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		   0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		   -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+		   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		   0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		   0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		   0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		   -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 		};
 
+		/*vertices =
+		{
+			pos.x, pos.y, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y, pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y - length , pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y - length, pos.z,				1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x, pos.y - length, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
+			pos.x + length, pos.y - length, pos.z + length,		1.f, 0.f, 0.f,		0.f,0.f,
+		};
 		indices =
 		{
 			0,1,2,
@@ -61,13 +105,13 @@ public:
 			0,4,5,
 			3,2,6,
 			3,6,7
-		};
+		};*/
 
 		vao.Bind();
 		vbo.Initialize(vertices);
-		ebo.Initialize(indices);
-		vao.LinkAttribute(vbo, 0, 3, GL_FLOAT, 8 * sizeof(GLfloat), nullptr);
-		vao.LinkAttribute(vbo, 1, 3, GL_FLOAT, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		//ebo.Initialize(indices);
+		vao.LinkAttribute(vbo, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), nullptr);
+		vao.LinkAttribute(vbo, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
 		vao.Unbind();
 		vbo.Unbind();
@@ -81,8 +125,8 @@ public:
 		shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 		shader.setVec3("lightPos", lightPos);
 		shader.setVec3("viewPos", pCamera->GetPosition());
-		shader.setValue("Kd", Kd);
 		shader.setValue("Ka", Ka);
+		shader.setValue("Kd", Kd);
 		shader.setValue("Ks", Ks);
 		shader.setValue("spec", spec);
 
@@ -92,7 +136,9 @@ public:
 		shader.setMat4("model", model);
 
 		vao.Bind();
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		vbo.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		vao.Unbind();
 		//vao.Unbind();
 	}
@@ -117,6 +163,7 @@ GLfloat spec = 2;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
@@ -140,6 +187,7 @@ int main() {
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -147,6 +195,7 @@ int main() {
 	glewInit();
 
 	glEnable(GL_DEPTH_TEST);
+
 
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
@@ -175,8 +224,8 @@ int main() {
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
-		glm::mat4 model = glm::mat4(1.0);
-		//glm::mat4 model = glm::scale(glm::mat4(1.0), glm::vec3(3.0f));
+		
+		glm::mat4 model = glm::scale(glm::mat4(1.0), glm::vec3(3.0f));
 		cube.Render(cubeShader, model, pCamera, lightPos, Ka, Kd, Ks, spec);
 
 		glfwSwapBuffers(window);
@@ -195,6 +244,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 		
 	}
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	pCamera->Reshape(width, height);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -227,6 +281,24 @@ void processInput(GLFWwindow* window)
 		pCamera->ProcessKeyboard(UP, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		Ka = std::min(1.f, Ka + 0.01f);
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+		Ka = std::max(0.f, Ka - 0.01f);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		Kd = std::min(1.f, Kd + 0.1f);
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+		Kd = std::max(0.f, Kd - 0.1f);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		Ks = std::min(1.f, Ks + 0.01f);
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+		Ks = std::max(0.f, Ks - 0.01f);
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+		spec = std::min(256.f, spec * 2);
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+		spec = std::max(2.f, spec / 2);
+
+
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		int width, height;
