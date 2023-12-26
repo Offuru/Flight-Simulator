@@ -1,25 +1,30 @@
-#include <stdlib.h> 
+// ViewOBJModel.cpp : This file contains the 'main' function. Program execution begins and ends there.
+
+#include <Windows.h>
+#include <locale>
+#include <codecvt>
+
+#include <stdlib.h> // necesare pentru citirea shader-elor
 #include <stdio.h>
 #include <math.h> 
-#include <vector>
-#include <array>
 
 #include <glew/glew.h>
+
 #include <glm/GLM.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <glfw/glfw3.h>
 
+#define STB_IMAGE_IMPLEMENTATION 
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-#include "VBO.h"
-#include "VAO.h"
-#include "EBO.h"
 #include "Shader.h"
+#include "Model.h"
 #include "Camera.h"
+#include "VAO.h"
 #include "LightSource.h"
 
 #pragma comment (lib, "glfw3dll.lib")
@@ -199,37 +204,95 @@ int main() {
 
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-	glm::vec3 initialCameraPosition = glm::vec3(0.0, 0.0, 3.0);
+	glm::vec3 initialCameraPosition = glm::vec3(0, 0, 0);
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glm::vec3 lightPos(3.0f, 0.0f, 0.0f);
-	Cube cube{ glm::vec3{1.f,0.f,-1.f}, 1.f };
-	LightSource light{ lightPos, 0.5f };
+	glm::vec3 lightPos(10000.0, 10000.0, 10000.0);
 
-	Shader cubeShader("PhongLight.vs", "PhongLight.fs");
-	Shader lightShader("Lamp.vs", "Lamp.fs");
+
+
+	wchar_t buffer[MAX_PATH];
+	GetCurrentDirectoryW(MAX_PATH, buffer);
+
+	std::wstring executablePath(buffer);
+	std::wstring wscurrentPath = executablePath.substr(0, executablePath.find_last_of(L"\\/"));
+
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	std::string currentPath = converter.to_bytes(wscurrentPath);
+	//Shader modelShader("model_loading_nolight.vs", "model_loading_nolight.fs");
+	//Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
+	Shader modelShader("sunlight.vs", "sunlight.fs");
+
+
+	// tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
+	/*stbi_set_flip_vertically_on_load(true);*/
+
+
+
+	std::string planeModelPath = (currentPath + "\\models\\Plane\\Plane.obj");
+	Model planeModel1(planeModelPath, false);
+
+	std::string planeModelPath2 = (currentPath + "\\models\\Plane2\\untitled.obj");
+	Model planeModel2(planeModelPath2);
+
+	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
+	LightSource light{ lightPos, 0.5f };
+	//glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	// render loop
 
 	while (!glfwWindowShouldClose(window)) {
+		// per-frame time logic
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		// input
 		processInput(window);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, true);
-		
-		glm::mat4 model = glm::scale(glm::mat4(1.0), glm::vec3(3.0f));
-		cube.Render(cubeShader, model, pCamera, lightPos, Ka, Kd, Ks, spec);
+		/*lightPos.x = 0.5 * cos(glfwGetTime());
+		lightPos.z = 0.5 * sin(glfwGetTime());*/
 
-		model = glm::translate(glm::mat4(1.0), lightPos);
+		glm::mat4 model = glm::translate(glm::mat4(1.0), lightPos);
 		model = glm::scale(model, glm::vec3(0.05f));
 		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
+
+		modelShader.use();
+
+		//pt sunlight shader
+
+		modelShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+		modelShader.setVec3("viewPos", pCamera->GetPosition());
+
+		// light properties
+		modelShader.setVec3("light.ambient", 0.3f, 0.3f, 0.3f);
+		modelShader.setVec3("light.diffuse", 0.0f, 0.0f, 0.0f);
+		modelShader.setVec3("light.specular", 0.0001f, 0.0001f, 0.0001f);
+
+		// material properties
+		modelShader.setValue("material.shininess", 0.0001f);
+
+		// view/projection transformations
+		modelShader.setMat4("projection", pCamera->GetProjectionMatrix());
+		modelShader.setMat4("view", pCamera->GetViewMatrix());
+
+		//plane
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.f, -6.f, -20.f));
+		model = glm::rotate(model, 3.14f, glm::vec3(0.f, 1.f, 0.f));
+
+		modelShader.setMat4("model", model);
+		planeModel1.Draw(modelShader);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.f, -6.f, 20.f));
+
+		modelShader.setMat4("model", model);
+		planeModel2.Draw(modelShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -245,13 +308,13 @@ int main() {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	// Ensure that the function only responds when a key is pressed or held down
 	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-		
+
 	}
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	pCamera->Reshape(width, height);
+	pCamera->reshape(width, height);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -283,11 +346,10 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
 
-
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		int width, height;
 		glfwGetWindowSize(window, &width, &height);
-		pCamera->Reset(width, height);
+		pCamera->reset(width, height);
 
 	}
 }
