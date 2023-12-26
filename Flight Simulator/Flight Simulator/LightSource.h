@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 
-#include <glew.h>
+#include <glew/glew.h>
 #include <glm/GLM.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glfw3.h>
+#include <glfw/glfw3.h>
 
 #include "Shader.h"
 #include "EBO.h"

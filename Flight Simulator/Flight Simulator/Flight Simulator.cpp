@@ -4,13 +4,12 @@
 #include <vector>
 #include <array>
 
-#include <glew.h>
-
+#include <glew/glew.h>
 #include <glm/GLM.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <glfw3.h>
+#include <glfw/glfw3.h>
 
 #include <iostream>
 #include <fstream>
@@ -271,35 +270,18 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(LEFT, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(UP, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		Ka = std::min(1.f, Ka + 0.01f);
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-		Ka = std::max(0.f, Ka - 0.01f);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		Kd = std::min(1.f, Kd + 0.1f);
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		Kd = std::max(0.f, Kd - 0.1f);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		Ks = std::min(1.f, Ks + 0.01f);
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
-		Ks = std::max(0.f, Ks - 0.01f);
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		spec = std::min(256.f, spec * 2);
-	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-		spec = std::max(2.f, spec / 2);
-
+		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(LEFT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(UP, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
 
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
