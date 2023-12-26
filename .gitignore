@@ -3,8 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-!Flight Simulator/models/*
-
 # User-specific files
 *.rsuser
 *.suo
@@ -398,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+!Flight Simulator/models/**/*.obj
