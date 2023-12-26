@@ -1,0 +1,45 @@
+# Blender 4.0.1 MTL File: 'None'
+# www.blender.org
+
+newmtl Cables.001
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Kd 0.229022 0.135125 0.106388
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+
+newmtl Glass.001
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+
+newmtl Helix.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd AVIOn3UVs_Helix_BaseColor.jpg
+map_Ns AVIOn3UVs_Helix_Roughness.jpg
+map_refl AVIOn3UVs_Helix_Metallic.jpg
+
+newmtl Plane.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd AVIOn3UVs_Plane_BaseColor.jpg
+map_Ns AVIOn3UVs_Plane_Roughness.jpg
+map_refl AVIOn3UVs_Plane_Metallic.jpg
+map_Bump -bm 1.000000 AVIOn3UVs_Plane_NormalOpenGL.jpg
