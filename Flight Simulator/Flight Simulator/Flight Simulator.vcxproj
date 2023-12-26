@@ -125,7 +125,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalOptions>"$(SolutionDir)/libraries/glew/x64/glew32.lib" "$(SolutionDir)/libraries/glfw/glfw3.lib" "$(SolutionDir)/libraries/assimp/x64/*.lib" "$(SolutionDir)/libraries/OpenGL32.lib" "$(SolutionDir)/libraries/glfw/glfw3dll.lib" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>"$(SolutionDir)/libraries/glew/64/glew32.lib" "$(SolutionDir)/libraries/glfw/glfw3.lib" "$(SolutionDir)/libraries/assimp/64/*.lib" "$(SolutionDir)/libraries/OpenGL32.lib" "$(SolutionDir)/libraries/glfw/glfw3dll.lib" %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
