@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glew/glew.h>
+#include <iostream>
 
 enum ECameraMovementType
 {
@@ -19,40 +20,38 @@ enum ECameraMovementType
 
 class Camera
 {
-private:
-	// Default camera values
-	const float zNEAR = 0.1f;
-	const float zFAR = 500.f;
-	const float YAW = -90.0f;
-	const float PITCH = 0.0f;
-	const float FOV = 45.0f;
-	glm::vec3 startPosition;
-
 public:
 	Camera(const int width, const int height, const glm::vec3& position);
 
-	void Set(const int width, const int height, const glm::vec3& position);
-	void Reset(const int width, const int height);
-	void Reshape(int windowWidth, int windowHeight);
+	void set(const int width, const int height, const glm::vec3& position);
+	void reset(const int width, const int height);
+	void reshape(int windowWidth, int windowHeight);
 
 	const glm::mat4 GetViewMatrix() const;
 	const glm::vec3 GetPosition() const;
 	const glm::mat4 GetProjectionMatrix() const;
-	const float getFoVy() const;
 
 	void ProcessKeyboard(ECameraMovementType direction, float deltaTime);
 	void MouseControl(float xPos, float yPos);
 	void ProcessMouseScroll(float yOffset);
 
+	float getFoV() const;
+
 private:
 	void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
 	void UpdateCameraVectors();
 
-protected:
+	const float zNEAR = 0.1f;
+	const float zFAR = 5000000.f;
+	const float YAW = -90.0f;
+	const float PITCH = 0.0f;
+	const float FOV = 45.0f;
+	glm::vec3 startPosition;
+
 	const float cameraSpeedFactor = 2.5f;
 	const float mouseSensitivity = 0.1f;
+	const float cameraSpeed = 10.f;
 
-	// Perspective properties
 	float zNear;
 	float zFar;
 	float FoVy;
@@ -66,10 +65,10 @@ protected:
 	glm::vec3 up;
 	glm::vec3 worldUp;
 
-	// Euler Angles
 	float yaw;
 	float pitch;
 
 	bool bFirstMouseMove = true;
 	float lastX = 0.f, lastY = 0.f;
 };
+
