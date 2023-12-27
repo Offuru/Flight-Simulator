@@ -173,7 +173,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
 void processInput(GLFWwindow* window);
-void renderScene(Shader& shader);
+void renderScene(Shader& shader, glm::vec3& lightPos);
 void clean();
 
 std::string currentPath;
@@ -214,7 +214,7 @@ int main() {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glm::vec3 lightPos(10000.0, 10000.0, 10000.0);
+	glm::vec3 lightPos(10.f, 1720.f, 20.f);
 
 	wchar_t buffer[MAX_PATH];
 	GetCurrentDirectoryW(MAX_PATH, buffer);
@@ -226,7 +226,7 @@ int main() {
 	currentPath = converter.to_bytes(wscurrentPath);
 	//Shader modelShader("model_loading_nolight.vs", "model_loading_nolight.fs");
 	//Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
-	Shader modelShader("sunlight.vs", "sunlight.fs");
+	Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
 
 
 	// tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
@@ -237,7 +237,7 @@ int main() {
 	std::string planeModelPath = (currentPath + "\\models\\SRTM\\untitled.obj");
 	Model* SRTM = new Model(planeModelPath, false);
 
-	std::string planeModelPath2 = (currentPath + "\\models\\Plane2\\untitled.obj");
+	std::string planeModelPath2 = (currentPath + "\\models\\Plane\\Plane.obj");
 	Model* planeModel2 = new Model(planeModelPath2, false);
 
 	objects.push_back(SRTM);
@@ -246,8 +246,6 @@ int main() {
 
 	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
 	LightSource light{ lightPos, 0.5f };
-	//glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	// render loop
 
 	while (!glfwWindowShouldClose(window)) {
 		// per-frame time logic
@@ -269,10 +267,7 @@ int main() {
 		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
 
 		modelShader.use();
-		renderScene(modelShader);
-		//pt sunlight shader
-
-		
+		renderScene(modelShader, lightPos);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -334,39 +329,40 @@ void processInput(GLFWwindow* window)
 	}
 }
 
-void renderScene(Shader& shader)
+void renderScene(Shader& shader, glm::vec3& lightPos)
 {
 	glm::mat4 model = glm::mat4(1.0f);
 
 	Model* SRTM = objects[0];
 	Model* planeModel2 = objects[1];
 
-	shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+	shader.setVec3("light.position", lightPos);
 	shader.setVec3("viewPos", pCamera->GetPosition());
 
+
 	// light properties
-	shader.setVec3("light.ambient", 0.3f, 0.3f, 0.3f);
-	shader.setVec3("light.diffuse", 0.0f, 0.0f, 0.0f);
-	shader.setVec3("light.specular", 0.0001f, 0.0001f, 0.0001f);
+	shader.setVec3("light.ambient", 1.f, 1.f,1.f);
+	shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+	shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+	shader.setValue("light.constant", 1.0f);
+	shader.setValue("light.linear", FLT_MIN);
+	shader.setValue("light.quadratic", FLT_MIN);
 
 	// material properties
-	shader.setValue("material.shininess", 0.0001f);
+	shader.setValue("material.shininess", 100.0f);
 
-	// view/projection transformations
 	shader.setMat4("projection", pCamera->GetProjectionMatrix());
 	shader.setMat4("view", pCamera->GetViewMatrix());
 
-	//plane
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.f, -6.f, -20.f));
 	//model = glm::rotate(model, 3.14f, glm::vec3(0.f, 1.f, 0.f));
-
 	shader.setMat4("model", model);
 	SRTM->Draw(shader);
 
+	shader.setValue("material.shininess", 5.0f);
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(10.f, 1700.f, 20.f));
-
 	shader.setMat4("model", model);
 	planeModel2->Draw(shader);
 }

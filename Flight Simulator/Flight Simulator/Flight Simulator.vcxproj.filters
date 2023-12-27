@@ -88,5 +88,17 @@
     <None Include="Lamp.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="1.model_loading.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="1.model_loading.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sunlight.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sunlight.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
