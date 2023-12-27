@@ -173,6 +173,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
 void processInput(GLFWwindow* window);
+void renderScene(Shader& shader);
+void clean();
+
+std::string currentPath;
+std::vector<Model*> objects;
 
 
 int main() {
@@ -204,14 +209,12 @@ int main() {
 
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-	glm::vec3 initialCameraPosition = glm::vec3(0, 0, 0);
+	glm::vec3 initialCameraPosition = glm::vec3(10.f, 1700.f, 20.f);
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glm::vec3 lightPos(10000.0, 10000.0, 10000.0);
-
-
 
 	wchar_t buffer[MAX_PATH];
 	GetCurrentDirectoryW(MAX_PATH, buffer);
@@ -220,7 +223,7 @@ int main() {
 	std::wstring wscurrentPath = executablePath.substr(0, executablePath.find_last_of(L"\\/"));
 
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-	std::string currentPath = converter.to_bytes(wscurrentPath);
+	currentPath = converter.to_bytes(wscurrentPath);
 	//Shader modelShader("model_loading_nolight.vs", "model_loading_nolight.fs");
 	//Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
 	Shader modelShader("sunlight.vs", "sunlight.fs");
@@ -231,11 +234,15 @@ int main() {
 
 
 
-	std::string planeModelPath = (currentPath + "\\models\\Plane\\Plane.obj");
-	Model planeModel1(planeModelPath, false);
+	std::string planeModelPath = (currentPath + "\\models\\SRTM\\untitled.obj");
+	Model* SRTM = new Model(planeModelPath, false);
 
 	std::string planeModelPath2 = (currentPath + "\\models\\Plane2\\untitled.obj");
-	Model planeModel2(planeModelPath2);
+	Model* planeModel2 = new Model(planeModelPath2, false);
+
+	objects.push_back(SRTM);
+	objects.push_back(planeModel2);
+	
 
 	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
 	LightSource light{ lightPos, 0.5f };
@@ -262,43 +269,16 @@ int main() {
 		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
 
 		modelShader.use();
-
+		renderScene(modelShader);
 		//pt sunlight shader
 
-		modelShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
-		modelShader.setVec3("viewPos", pCamera->GetPosition());
-
-		// light properties
-		modelShader.setVec3("light.ambient", 0.3f, 0.3f, 0.3f);
-		modelShader.setVec3("light.diffuse", 0.0f, 0.0f, 0.0f);
-		modelShader.setVec3("light.specular", 0.0001f, 0.0001f, 0.0001f);
-
-		// material properties
-		modelShader.setValue("material.shininess", 0.0001f);
-
-		// view/projection transformations
-		modelShader.setMat4("projection", pCamera->GetProjectionMatrix());
-		modelShader.setMat4("view", pCamera->GetViewMatrix());
-
-		//plane
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.f, -6.f, -20.f));
-		model = glm::rotate(model, 3.14f, glm::vec3(0.f, 1.f, 0.f));
-
-		modelShader.setMat4("model", model);
-		planeModel1.Draw(modelShader);
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.f, -6.f, 20.f));
-
-		modelShader.setMat4("model", model);
-		planeModel2.Draw(modelShader);
+		
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	delete pCamera;
+	clean();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
@@ -352,4 +332,49 @@ void processInput(GLFWwindow* window)
 		pCamera->reset(width, height);
 
 	}
+}
+
+void renderScene(Shader& shader)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	Model* SRTM = objects[0];
+	Model* planeModel2 = objects[1];
+
+	shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+	shader.setVec3("viewPos", pCamera->GetPosition());
+
+	// light properties
+	shader.setVec3("light.ambient", 0.3f, 0.3f, 0.3f);
+	shader.setVec3("light.diffuse", 0.0f, 0.0f, 0.0f);
+	shader.setVec3("light.specular", 0.0001f, 0.0001f, 0.0001f);
+
+	// material properties
+	shader.setValue("material.shininess", 0.0001f);
+
+	// view/projection transformations
+	shader.setMat4("projection", pCamera->GetProjectionMatrix());
+	shader.setMat4("view", pCamera->GetViewMatrix());
+
+	//plane
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.f, -6.f, -20.f));
+	//model = glm::rotate(model, 3.14f, glm::vec3(0.f, 1.f, 0.f));
+
+	shader.setMat4("model", model);
+	SRTM->Draw(shader);
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(10.f, 1700.f, 20.f));
+
+	shader.setMat4("model", model);
+	planeModel2->Draw(shader);
+}
+
+void clean()
+{
+	for (auto& obj : objects)
+		delete obj;
+
+	delete pCamera;
 }
