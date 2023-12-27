@@ -56,7 +56,7 @@ const glm::mat4 Camera::GetProjectionMatrix() const
 	if (isPerspective)
 	{
 		float aspectRatio = (float)width / height;
-		proj = glm::perspective(FoVy, aspectRatio, zNear, zFar);
+		proj = glm::perspective(glm::radians(FoVy), aspectRatio, zNear, zFar);
 	}
 	else
 	{
