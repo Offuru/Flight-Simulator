@@ -27,6 +27,7 @@
 #include "VAO.h"
 #include "LightSource.h"
 #include "Plane.h"
+#include "Object.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -54,10 +55,11 @@ void renderCube();
 std::string currentPath;
 std::vector<Model*> objects;
 unsigned int depthMap;
-glm::vec3 lightPos(5.0f, 1630.f, -2.0);
+glm::vec3 lightPos(5.0f, 163000.f, -2.0);
 
 Plane airplane({ 5.0f, 1630.f, -2.0 });
 glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
+std::vector<Object*> _objects;
 
 
 int main() {
@@ -101,6 +103,9 @@ int main() {
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
 	
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glEnable(GL_POINT_SMOOTH);
+	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
 	Shader shadowMappingShader("ShadowMapping.vs", "ShadowMapping.fs");
 	Shader shadowMappingDepthShader("shadow_mapping_depth.vs", "shadow_mapping_depth.fs");
@@ -109,7 +114,7 @@ int main() {
 	Model* SRTM = new Model(SRTMModelPath, false);
 
 
-	std::string planeModelPath2 = (currentPath + "\\models\\Plane\\Plane.obj");
+	std::string planeModelPath2 = (currentPath + "\\models\\Plane2\\untitled.obj");
 	Model* planeModel2 = new Model(planeModelPath2, false);
 
 	airplane.setModel(planeModel2);
@@ -148,6 +153,14 @@ int main() {
 	shadowMappingShader.setInt("shadowMap", 1);
 
 	glEnable(GL_CULL_FACE);
+
+	Object* runway = new Object();
+	runway->model = new Model(currentPath + "\\models\\Airport\\airport.obj");
+	runway->position = glm::vec3(0, 1700, 0);
+
+	Object* plane = new Object();
+	plane->model = new Model(currentPath + "\\models\\Plane2\\untitled.obj");
+	plane->position = glm::vec3(5.0f, 1730.f, -2.0);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -235,10 +248,15 @@ int main() {
 		glDisable(GL_CULL_FACE);
 		renderScene(shadowMappingShader);
 
+		runway->Render(shadowMappingShader); //textures are currently buggy, find another airport later
+		plane->Render(shadowMappingShader);
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		std::cout << lightPos.y << '\n';
+
+
 	}
 
 	clean();
