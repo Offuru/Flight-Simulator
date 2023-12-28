@@ -9,7 +9,7 @@
 #include <math.h> 
 
 #include <glew/glew.h>
-
+#define GLM_FORCE_CTOR_INIT 
 #include <glm/GLM.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -31,137 +31,10 @@
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-class Cube
-{
-public:
-	Cube(const glm::vec3& pos, GLfloat length) :
-		vao{ VAO{} }, vbo{ VBO{} }, ebo{ EBO{} }
-	{
-		vertices =
-		{
-		   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		   0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		   0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		   0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		   -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-		   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		   0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		   0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		   0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		   -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-		   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		   -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		   -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-		   0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		   0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		   0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		   0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		   0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		   0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-		   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		   0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		   0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		   0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		   -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-		   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		   0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		   0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		   0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		   -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-		};
-
-		/*vertices =
-		{
-			pos.x, pos.y, pos.z,								1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y, pos.z + length,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y - length , pos.z,						1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y - length, pos.z,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x, pos.y - length, pos.z + length,				1.f, 0.f, 0.f,		0.f,0.f,
-			pos.x + length, pos.y - length, pos.z + length,		1.f, 0.f, 0.f,		0.f,0.f,
-		};
-		indices =
-		{
-			0,1,2,
-			0,2,3,
-			1,5,6,
-			1,6,2,
-			5,4,7,
-			5,7,6,
-			4,0,3,
-			4,3,7,
-			0,5,1,
-			0,4,5,
-			3,2,6,
-			3,6,7
-		};*/
-
-		vao.Bind();
-		vbo.Initialize(vertices);
-		//ebo.Initialize(indices);
-		vao.LinkAttribute(vbo, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), nullptr);
-		vao.LinkAttribute(vbo, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-
-		vao.Unbind();
-		vbo.Unbind();
-		vao.Unbind();
-	}
-
-	void Render(Shader& shader, const glm::mat4& model, Camera* pCamera, glm::vec3& lightPos, GLfloat& Ka, GLfloat& Kd, GLfloat& Ks, GLfloat& spec)
-	{
-		shader.use();
-		shader.setVec3("objectColor", 0.5f, 1.0f, 0.31f);
-		shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		shader.setVec3("lightPos", lightPos);
-		shader.setVec3("viewPos", pCamera->GetPosition());
-		shader.setValue("Ka", Ka);
-		shader.setValue("Kd", Kd);
-		shader.setValue("Ks", Ks);
-		shader.setValue("spec", spec);
-
-		shader.setMat4("projection", pCamera->GetProjectionMatrix());
-		shader.setMat4("view", pCamera->GetViewMatrix());
-
-		shader.setMat4("model", model);
-
-		vao.Bind();
-		vbo.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		vao.Unbind();
-		//vao.Unbind();
-	}
-
-private:
-	VAO vao;
-	VBO vbo;
-	EBO ebo;
-
-	std::vector<GLuint> indices;
-	std::vector<GLfloat> vertices;
-};
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1200;
 
 Camera* pCamera = nullptr;
-GLfloat Ka = 0.1;
-GLfloat Kd = 0.5;
-GLfloat Ks = 2;
-GLfloat spec = 2;
 
 
 // Time variables to manage the speed of the camera
@@ -173,16 +46,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
 void processInput(GLFWwindow* window);
-void renderScene(Shader& shader, glm::vec3& lightPos);
+void renderScene(Shader& shader);
 void clean();
+void renderCube();
 
 std::string currentPath;
 std::vector<Model*> objects;
+unsigned int depthMap;
+glm::vec3 lightPos(5.0f, 1630.f, -2.0);
+
 
 
 int main() {
+	wchar_t buffer[MAX_PATH];
+	GetCurrentDirectoryW(MAX_PATH, buffer);
+
+	std::wstring executablePath(buffer);
+	std::wstring wscurrentPath = executablePath.substr(0, executablePath.find_last_of(L"\\/"));
+
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	currentPath = converter.to_bytes(wscurrentPath);
+
 	// glfw: initialize and configure
-	glewExperimental = GL_TRUE;
+	//glewExperimental = GL_TRUE;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -204,73 +90,133 @@ int main() {
 
 	glewInit();
 
-	glEnable(GL_DEPTH_TEST);
-
-
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-
-	glm::vec3 initialCameraPosition = glm::vec3(10.f, 1700.f, 20.f);
-	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
-
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glm::vec3 lightPos(10.f, 1720.f, 20.f);
+	
+	//glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glm::vec3 initialCameraPosition = glm::vec3(5.0f, 1630.f, -2.0);
+	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
+	
+	glEnable(GL_DEPTH_TEST);
 
-	wchar_t buffer[MAX_PATH];
-	GetCurrentDirectoryW(MAX_PATH, buffer);
+	Shader shadowMappingShader("ShadowMapping.vs", "ShadowMapping.fs");
+	Shader shadowMappingDepthShader("shadow_mapping_depth.vs", "shadow_mapping_depth.fs");
+	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
+	std::string SRTMModelPath = (currentPath + "\\models\\SRTM\\untitled.obj");
+	Model* SRTM = new Model(SRTMModelPath, false);
 
-	std::wstring executablePath(buffer);
-	std::wstring wscurrentPath = executablePath.substr(0, executablePath.find_last_of(L"\\/"));
-
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-	currentPath = converter.to_bytes(wscurrentPath);
-	//Shader modelShader("model_loading_nolight.vs", "model_loading_nolight.fs");
-	//Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
-	Shader modelShader("1.model_loading.vs", "1.model_loading.fs");
-
-
-	// tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-	/*stbi_set_flip_vertically_on_load(true);*/
-
-
-
-	std::string planeModelPath = (currentPath + "\\models\\SRTM\\untitled.obj");
-	Model* SRTM = new Model(planeModelPath, false);
 
 	std::string planeModelPath2 = (currentPath + "\\models\\Plane\\Plane.obj");
 	Model* planeModel2 = new Model(planeModelPath2, false);
 
 	objects.push_back(SRTM);
 	objects.push_back(planeModel2);
-	
 
-	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
 	LightSource light{ lightPos, 0.5f };
 
-	while (!glfwWindowShouldClose(window)) {
+	// configure depth map FBO
+	// -----------------------
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	unsigned int depthMapFBO;
+	glGenFramebuffers(1, &depthMapFBO);
+	// create depth texture
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	// attach depth texture as FBO's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	shadowMappingShader.use();
+	shadowMappingShader.setInt("diffuseTexture", 0);
+	shadowMappingShader.setInt("shadowMap", 1);
+
+	glEnable(GL_CULL_FACE);
+
+	while (!glfwWindowShouldClose(window))
+	{
 		// per-frame time logic
-		double currentFrame = glfwGetTime();
+		// --------------------
+		float currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
 		// input
+		// -----
 		processInput(window);
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		// render
+		// ------
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		/*lightPos.x = 0.5 * cos(glfwGetTime());
-		lightPos.z = 0.5 * sin(glfwGetTime());*/
+		// 1. render depth of scene to texture (from light's perspective)
+		glm::mat4 lightProjection, lightView;
+		glm::mat4 lightSpaceMatrix;
+		glm::mat4 lightModelMatrix;
+
+
+		float near_plane = 1.0f, far_plane = 10.f;
+		lightProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.f);
+		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightModelMatrix = glm::translate(glm::mat4(1), lightPos);
+
+		lightSpaceMatrix = lightProjection * lightView;
+
+		// render scene from light's point of view
+		shadowMappingDepthShader.use();
+		shadowMappingDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderScene(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// reset viewport
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// 2. render scene as normal using the generated depth/shadow map 
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0), lightPos);
 		model = glm::scale(model, glm::vec3(0.05f));
 		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
 
-		modelShader.use();
-		renderScene(modelShader, lightPos);
+		shadowMappingShader.use();
+		glm::mat4 projection = pCamera->GetProjectionMatrix();
+		glm::mat4 view = pCamera->GetViewMatrix();
+		shadowMappingShader.setMat4("projection", projection);
+		shadowMappingShader.setMat4("view", view);
+		// set light uniforms
+		shadowMappingShader.setVec3("viewPos", pCamera->GetPosition());
+		shadowMappingShader.setVec3("lightPos", lightPos);
+		shadowMappingShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderScene(shadowMappingShader);
+
+		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		std::cout << lightPos.y << '\n';
 	}
 
 	clean();
@@ -320,6 +266,18 @@ void processInput(GLFWwindow* window)
 		pCamera->ProcessKeyboard(UP, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		lightPos.y += 0.1f;
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		lightPos.y -= 0.1f;
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		lightPos.x += 0.1f;
+	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		lightPos.x -= 0.1f;
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		lightPos.z += 0.1f;
+	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+		lightPos.z -= 0.1f;
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		int width, height;
@@ -329,42 +287,24 @@ void processInput(GLFWwindow* window)
 	}
 }
 
-void renderScene(Shader& shader, glm::vec3& lightPos)
+void renderScene(Shader& shader)
 {
-	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4();
 
-	Model* SRTM = objects[0];
-	Model* planeModel2 = objects[1];
-
-	shader.setVec3("light.position", lightPos);
-	shader.setVec3("viewPos", pCamera->GetPosition());
-
-
-	// light properties
-	shader.setVec3("light.ambient", 1.f, 1.f,1.f);
-	shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-	shader.setValue("light.constant", 1.0f);
-	shader.setValue("light.linear", FLT_MIN);
-	shader.setValue("light.quadratic", FLT_MIN);
-
-	// material properties
-	shader.setValue("material.shininess", 100.0f);
-
-	shader.setMat4("projection", pCamera->GetProjectionMatrix());
-	shader.setMat4("view", pCamera->GetViewMatrix());
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.f, -6.f, -20.f));
-	//model = glm::rotate(model, 3.14f, glm::vec3(0.f, 1.f, 0.f));
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(5.0f, 0.f, -2.0));
+	
 	shader.setMat4("model", model);
-	SRTM->Draw(shader);
+	objects[0]->Draw(shader);
 
-	shader.setValue("material.shininess", 5.0f);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(10.f, 1700.f, 20.f));
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(5.0f, 1630.f, -2.0));
+	model = glm::scale(model, glm::vec3(0.2f));
 	shader.setMat4("model", model);
-	planeModel2->Draw(shader);
+	objects[1]->Draw(shader);
+
+
 }
 
 void clean()
@@ -373,4 +313,79 @@ void clean()
 		delete obj;
 
 	delete pCamera;
+}
+
+// renderCube() renders a 1x1 3D cube in NDC.
+// -------------------------------------------------
+unsigned int cubeVAO = 0;
+unsigned int cubeVBO = 0;
+void renderCube()
+{
+	// initialize (if necessary)
+	if (cubeVAO == 0)
+	{
+		float vertices[] = {
+			// back face
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			// front face
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			// left face
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			// right face
+			1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			// bottom face
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			// top face
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+		};
+		glGenVertexArrays(1, &cubeVAO);
+		glGenBuffers(1, &cubeVBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(cubeVAO);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
 }

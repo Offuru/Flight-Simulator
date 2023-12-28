@@ -50,7 +50,7 @@ private:
 
 	const float cameraSpeedFactor = 2.5f;
 	const float mouseSensitivity = 0.1f;
-	const float cameraSpeed = 10.f;
+	const float cameraSpeed = 50.f;
 
 	float zNear;
 	float zFar;

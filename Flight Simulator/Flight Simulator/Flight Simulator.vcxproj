@@ -169,12 +169,14 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="1.model_loading.fs" />
-    <None Include="1.model_loading.vs" />
+    <None Include="ShadowMapping.fs" />
+    <None Include="ShadowMapping.vs" />
     <None Include="Lamp.fs" />
     <None Include="Lamp.vs" />
     <None Include="PhongLight.fs" />
     <None Include="PhongLight.vs" />
+    <None Include="shadow_mapping_depth.fs" />
+    <None Include="shadow_mapping_depth.vs" />
     <None Include="sunlight.fs" />
     <None Include="sunlight.vs" />
   </ItemGroup>
