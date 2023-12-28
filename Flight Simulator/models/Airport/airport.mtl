@@ -1,0 +1,26 @@
+newmtl Masterpiece_53a12f90-2d97-40b9-9e05-ed88ab4c69ff
+Kd 0.937 0.937 0.937
+d 1.000
+newmtl Excalibur_f8e3e1a9-69e0-4c75-8d5a-d57879b67e2f
+Kd 0.937 0.937 0.937
+d 1.000
+newmtl Mat123_364594a4-a136-4e59-9edd-39f43ae402b1
+Kd 1.000 1.000 1.000
+d 1.000
+map_Kd Mat1_baseColor.jpg
+newmtl Mat1_a141fb7a-f695-4dca-bd89-95bffee9ea82
+Kd 1.000 1.000 1.000
+d 1.000
+map_Kd Mat1_baseColor.jpg
+newmtl material_5c9a9742-a47c-4319-8479-0ebb0ca3f22d
+Kd 1.000 1.000 1.000
+d 1.000
+map_Kd material_baseColor.jpg
+newmtl Mat12340_2625608e-2a37-4e10-a86d-a0ed1562a973
+Kd 1.000 1.000 1.000
+d 1.000
+map_Kd Mat1_baseColor.jpg
+newmtl Mat120_2f7fcec6-a825-489f-b639-4f0fffae6272
+Kd 1.000 1.000 1.000
+d 1.000
+map_Kd Mat12_baseColor.jpg
