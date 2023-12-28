@@ -26,6 +26,7 @@
 #include "Camera.h"
 #include "VAO.h"
 #include "LightSource.h"
+#include "Plane.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -55,6 +56,8 @@ std::vector<Model*> objects;
 unsigned int depthMap;
 glm::vec3 lightPos(5.0f, 1630.f, -2.0);
 
+Plane airplane({ 5.0f, 1630.f, -2.0 });
+glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
 
 
 int main() {
@@ -108,6 +111,8 @@ int main() {
 
 	std::string planeModelPath2 = (currentPath + "\\models\\Plane\\Plane.obj");
 	Model* planeModel2 = new Model(planeModelPath2, false);
+
+	airplane.setModel(planeModel2);
 
 	objects.push_back(SRTM);
 	objects.push_back(planeModel2);
@@ -314,14 +319,12 @@ void renderScene(Shader& shader)
 	shader.setMat4("model", model);
 	objects[0]->Draw(shader);
 
-
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(5.0f, 1630.f, -2.0));
+	model = glm::translate(model, m_currPos);
 	model = glm::scale(model, glm::vec3(0.2f));
 	shader.setMat4("model", model);
-	objects[1]->Draw(shader);
-
-
+	airplane.getModel()->Draw(shader);
+	//airplane.draw(shader);
 }
 
 void clean()
