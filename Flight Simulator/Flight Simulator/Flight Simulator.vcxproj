@@ -177,8 +177,6 @@
     <None Include="PhongLight.vs" />
     <None Include="shadow_mapping_depth.fs" />
     <None Include="shadow_mapping_depth.vs" />
-    <None Include="sunlight.fs" />
-    <None Include="sunlight.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

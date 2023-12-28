@@ -94,12 +94,6 @@
     <None Include="ShadowMapping.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sunlight.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="sunlight.vs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="shadow_mapping_depth.vs">
       <Filter>Resource Files</Filter>
     </None>
