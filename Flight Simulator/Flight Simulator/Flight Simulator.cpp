@@ -344,11 +344,11 @@ void renderScene(Shader& shader)
 
 	model = glm::mat4();
 	model = glm::translate(model, airplane.getPos());
-	model = glm::scale(model, glm::vec3(0.2f));
+	model = glm::scale(model, glm::vec3(2.f));
 
-	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, -glm::radians(90.f), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, -glm::radians(airplane.getYaw()), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, -glm::radians(airplane.getPitch()), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(airplane.getPitch()), glm::vec3(1, 0, 0));
 
 	shader.setMat4("model", model);
 	airplane.getModel()->Draw(shader);

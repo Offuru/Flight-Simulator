@@ -48,21 +48,21 @@ void Plane::ProcessKeyboard(EPlaneMovementType direction)
 	case EPlaneMovementType::RIGHT:
 		if (currentSpeed > 0.1f)
 		{
-			m_yaw += 0.2f;
+			m_yaw += 0.1f;
 			if (m_yaw >= 360)
 				m_yaw -= 360;
 			
-			currentYaw = 0.2f;
+			currentYaw = 0.1f;
 		}
 		break;
 	case EPlaneMovementType::LEFT:
 		if (currentSpeed > 0.1f)
 		{
-			m_yaw -= 0.2f;
+			m_yaw -= 0.1f;
 			if (m_yaw < 0)
 				m_yaw = 360;
 
-			currentYaw = -0.2f;
+			currentYaw = -0.1f;
 		}
 		break;
 
@@ -91,15 +91,14 @@ void Plane::movePlane(float deltaTime)
 
 	m_position += m_right * velocity * currentYaw;
 
-	m_position += m_up * velocity * m_pitch;
-
-	std::cout << m_forward.x << " " << m_forward.y << " " << m_forward.z << '\n';
+	if (currentSpeed > 0.0f)
+	{
+		m_position += m_up * velocity * m_pitch;
+		m_pitch -= 0.01f;
+	}
 	
 	currentSpeed = std::max(currentSpeed - 0.1f, 0.f);
 	currentYaw = 0.f;
-
-	if (currentSpeed)
-		m_pitch -= 0.01f;
 }
 
 void Plane::UpdatePlaneVectors()
