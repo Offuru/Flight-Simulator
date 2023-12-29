@@ -37,13 +37,15 @@ public:
 
 	float getFoV() const;
 
+	void setPosition(const glm::vec3& position);
+
 private:
 	void ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
 	void UpdateCameraVectors();
 
 	const float zNEAR = 0.1f;
 	const float zFAR = 5000000.f;
-	const float YAW = -90.0f;
+	const float YAW = 90.0f;
 	const float PITCH = 0.0f;
 	const float FOV = 45.0f;
 	glm::vec3 startPosition;

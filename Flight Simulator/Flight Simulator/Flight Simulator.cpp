@@ -50,7 +50,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
 void processInput(GLFWwindow* window);
 void renderScene(Shader& shader);
 void clean();
-void renderCube();
 
 std::string currentPath;
 std::vector<Model*> objects;
@@ -170,6 +169,10 @@ int main() {
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		airplane.movePlane(deltaTime);
+
+		pCamera->setPosition(airplane.getPos() + glm::vec3(0, 5.5f, -12.f));
+
 		// input
 		// -----
 		processInput(window);
@@ -219,6 +222,7 @@ int main() {
 		shadowMappingShader.use();
 		glm::mat4 projection = pCamera->GetProjectionMatrix();
 		glm::mat4 view = pCamera->GetViewMatrix();
+		
 		shadowMappingShader.setMat4("projection", projection);
 		shadowMappingShader.setMat4("view", view);
 		// set light uniforms
@@ -295,17 +299,18 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::FORWARD);
+		//pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::BACKWARD);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(LEFT, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::LEFT);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::RIGHT);
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(UP, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::UP);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		pCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+		airplane.ProcessKeyboard(EPlaneMovementType::DOWN);
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		lightPos.y += 0.1f;
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
@@ -338,8 +343,13 @@ void renderScene(Shader& shader)
 	objects[0]->Draw(shader);
 
 	model = glm::mat4();
-	model = glm::translate(model, m_currPos);
+	model = glm::translate(model, airplane.getPos());
 	model = glm::scale(model, glm::vec3(0.2f));
+
+	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, -glm::radians(airplane.getYaw()), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, -glm::radians(airplane.getPitch()), glm::vec3(1, 0, 0));
+
 	shader.setMat4("model", model);
 	airplane.getModel()->Draw(shader);
 	//airplane.draw(shader);

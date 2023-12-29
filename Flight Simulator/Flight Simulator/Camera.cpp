@@ -137,6 +137,11 @@ float Camera::getFoV() const
 	return FoVy;
 }
 
+void Camera::setPosition(const glm::vec3& position)
+{
+	this->position = position;
+}
+
 void Camera::ProcessMouseMovement(float xOffset, float yOffset, bool constrainPitch)
 {
 	yaw += xOffset;
@@ -149,7 +154,6 @@ void Camera::ProcessMouseMovement(float xOffset, float yOffset, bool constrainPi
 		if (pitch < -89.f)
 			pitch = -89.f;
 	}
-
 	UpdateCameraVectors();
 }
 
