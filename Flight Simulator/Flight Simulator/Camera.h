@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <glfw/glfw3.h>
+#include "Plane.h"
 
 enum ECameraMovementType
 {
@@ -29,7 +30,7 @@ public:
 	void reset(const int width, const int height);
 	void reshape(int windowWidth, int windowHeight);
 
-	const glm::mat4 GetViewMatrix(glm::vec3 planePos, bool thirdPerson = true) const;
+	const glm::mat4 GetViewMatrix(Plane& plane, bool thirdPerson = true);
 	const glm::vec3 GetPosition() const;
 	const glm::mat4 GetProjectionMatrix() const;
 
@@ -47,7 +48,7 @@ private:
 
 	const float zNEAR = 0.1f;
 	const float zFAR = 5000000.f;
-	const float YAW = 90.0f;
+	const float YAW = 0.0f;
 	const float PITCH = 0.0f;
 	const float FOV = 45.0f;
 	glm::vec3 startPosition;
@@ -55,6 +56,8 @@ private:
 	const float cameraSpeedFactor = 2.5f;
 	const float mouseSensitivity = 0.1f;
 	const float cameraSpeed = 50.f;
+
+	float lastMouseMovement = (float)glfwGetTime();
 
 	float zNear;
 	float zFar;

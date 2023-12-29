@@ -112,13 +112,13 @@ void Plane::movePlane(float deltaTime)
 
 		if(m_roll > 0.f)
 		{
-			m_position += m_right * velocity * rollMoveRight;
+			m_position += m_right * velocity * rollMoveRight * m_roll;
 			m_yaw += 0.03f;
 			m_roll -= 0.03f;
 		}
 		else if(m_roll < 0.f)
 		{
-			m_position += m_right * velocity * (-1 * rollMoveRight);
+			m_position += m_right * velocity * (m_roll * rollMoveRight);
 			m_yaw -= 0.03f;
 			m_roll += 0.03f;
 		}

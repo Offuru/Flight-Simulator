@@ -39,18 +39,54 @@ void Camera::reshape(int windowWidth, int windowHeight)
 	glViewport(0, 0, width, height);
 }
 
-const glm::mat4 Camera::GetViewMatrix(glm::vec3 planePos, bool thirdPerson) const
+const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 {
 	if(!thirdPerson)
 		return glm::lookAt(position, position + forward, up);
 
+	float currentTime = (float)glfwGetTime();
 
+	float planeYaw = plane.getYaw() - 90.f;
+	float planePitch = plane.getPitch();
+
+	if (currentTime - lastMouseMovement >= 2.f)
+	{
+		//de luat yaw si pitch de la avion ?????
+		// 
+		// 
+		//reverting camera pos
+		if(yaw != planeYaw)
+		{
+			if ((yaw >= planeYaw && yaw <= planeYaw + 180.f) ||
+				(yaw <= planeYaw - 359.999f && yaw >= planeYaw - 180.0f))
+				yaw -= 0.1f;
+			else yaw += 0.1f;
+
+			if (yaw >= planeYaw + 360 || yaw <= planeYaw - 360)
+				yaw = 0;
+
+			if ((int)yaw == (int)planeYaw)
+				yaw = planeYaw;
+		}
+
+		if (pitch != -planePitch)
+		{
+			if (pitch >= -planePitch)
+				pitch -= 0.1f;
+			else
+				pitch += 0.1f;
+
+			if ((int)pitch == (int)-planePitch)
+				pitch = -planePitch;
+		}
+	}
 	float distance = 25.0f;
 	float x = distance * cos(glm::radians(pitch)) * sin(glm::radians(-yaw));
 	float y = distance * sin(glm::radians(pitch));
 	float z = distance * cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 
-	return glm::lookAt(planePos + glm::vec3(-x, y, -z), planePos, glm::vec3(0.0f, 0.1f, 0.0f));
+
+	return glm::lookAt(plane.getPos() + glm::vec3(-x, y, -z) + glm::vec3(0.f, 10.f, 0.f), plane.getPos(), glm::vec3(0.0f, 0.1f, 0.0f));
 }
 
 const glm::vec3 Camera::GetPosition() const
@@ -127,6 +163,8 @@ void Camera::MouseControl(float xPos, float yPos)
 	dx *= mouseSensitivity;
 	dy *= mouseSensitivity;
 
+	lastMouseMovement = (float)glfwGetTime();
+
 	ProcessMouseMovement(dx, dy);
 }
 
@@ -163,6 +201,11 @@ void Camera::ProcessMouseMovement(float xOffset, float yOffset, bool constrainPi
 		if (pitch < -89.f)
 			pitch = -89.f;
 	}
+
+	if (yaw >= 360)
+		yaw -= 360;
+	else if (yaw <= -360)
+		yaw += 360;
 	UpdateCameraVectors();
 }
 
