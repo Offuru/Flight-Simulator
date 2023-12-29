@@ -41,7 +41,7 @@ void Camera::reshape(int windowWidth, int windowHeight)
 
 const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 {
-	if(!thirdPerson)
+	if (!thirdPerson)
 		return glm::lookAt(position, position + forward, up);
 
 	float currentTime = (float)glfwGetTime();
@@ -51,23 +51,23 @@ const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 
 	if (currentTime - lastMouseMovement >= 2.f)
 	{
-		//de luat yaw si pitch de la avion ?????
-		// 
-		// 
 		//reverting camera pos
-		if(yaw != planeYaw)
+		if (yaw != planeYaw)
 		{
 			if ((yaw >= planeYaw && yaw <= planeYaw + 180.f) ||
-				(yaw <= planeYaw - 359.999f && yaw >= planeYaw - 180.0f))
+				(yaw >= planeYaw - 359.999f && yaw <= planeYaw - 180.0f))
 				yaw -= 0.1f;
 			else yaw += 0.1f;
 
-			if (yaw >= planeYaw + 360 || yaw <= planeYaw - 360)
-				yaw = 0;
+			if (yaw >= planeYaw + 360)
+				yaw -= 360;
+			if (yaw <= planeYaw - 360)
+				yaw += 360;
 
-			if ((int)yaw == (int)planeYaw)
+			if (std::abs(yaw - planeYaw) < 0.5 || std::abs(yaw + planeYaw + 180) < 0.5)
 				yaw = planeYaw;
 		}
+		std::cout << planeYaw << " " << yaw << '\n';
 
 		if (pitch != -planePitch)
 		{
@@ -86,7 +86,7 @@ const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 	float z = distance * cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 
 
-	return glm::lookAt(plane.getPos() + glm::vec3(-x, y, -z) + glm::vec3(0.f, 10.f, 0.f), plane.getPos(), glm::vec3(0.0f, 0.1f, 0.0f));
+	return glm::lookAt(plane.getPos() + glm::vec3(-x, y, -z) + glm::vec3(0.f, 10.f, 0.f), plane.getPos() + glm::vec3(0.f, 5.f, 0.f), glm::vec3(0.0f, 0.1f, 0.0f));
 }
 
 const glm::vec3 Camera::GetPosition() const

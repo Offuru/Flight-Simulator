@@ -79,11 +79,15 @@ void Plane::ProcessKeyboard(EPlaneMovementType direction)
 	
 	case EPlaneMovementType::ROLLRIGHT:
 		if (currentSpeed > 0.1f)
-			m_roll += 0.3f;
+			m_roll += 0.5f;
+		if (m_roll >= 360)
+			m_roll -= 360;
 		break;
 	case EPlaneMovementType::ROLLLEFT:
 		if (currentSpeed > 0.1f)
-			m_roll -= 0.3f;
+			m_roll -= 0.5f;
+		if (m_roll <= -360)
+			m_roll -= 360;
 		break;
 
 	}
@@ -110,54 +114,37 @@ void Plane::movePlane(float deltaTime)
 		m_pitch -= 0.004f;
 
 
-		if(m_roll > 0.f)
+		if (m_roll != 0.f)
 		{
 			m_position += m_right * velocity * rollMoveRight * m_roll;
-			m_yaw += 0.03f;
-			m_roll -= 0.03f;
-		}
-		else if(m_roll < 0.f)
-		{
-			m_position += m_right * velocity * (m_roll * rollMoveRight);
-			m_yaw -= 0.03f;
-			m_roll += 0.03f;
+
+			if ((m_roll >= 0 && m_roll <= 180.f) ||
+				(m_roll >= -360.f && m_roll <= -180.0f))
+				m_roll -= 0.1f, m_yaw += 0.03;
+			else m_roll += 0.1f, m_yaw -= 0.03;
+
+			if (m_roll >= 360 || m_roll <= -360)
+				m_roll = 0;
+
+			if (std::abs(m_roll) < 0.2f)
+				m_roll = 0.0f;
 		}
 	}
 	
 	currentSpeed = std::max(currentSpeed - 0.01f, 0.f);
 	currentYaw = 0.f;
-	//std::cout << m_roll << "\n";
 }
 
 void Plane::UpdatePlaneVectors()
 {
-
 	float x = glm::radians(m_yaw);
 	float y = glm::radians(m_pitch);
 	float z = glm::radians(m_roll);
 
-	m_forward.x = cos(glm::radians(m_yaw));
-	m_forward.y = sin(glm::radians(m_pitch));
-	m_forward.z = sin(glm::radians(m_yaw));
+	m_forward.x = cos(x) * cos(y);
+	m_forward.y = sin(y);
+	m_forward.z = sin(x) * cos(y);
 	m_forward = glm::normalize(m_forward);
-
-	/*m_forward.x = (cos(glm::radians(m_yaw))) * sin(glm::radians(m_pitch)) * sin(glm::radians(m_roll)) -
-		sin(glm::radians(m_yaw)) * cos(glm::radians(m_roll));
-	
-	m_forward.y = cos(glm::radians(m_pitch)) * sin(glm::radians(m_roll));
-
-	m_forward.z = (sin(glm::radians(m_yaw))) * sin(glm::radians(m_pitch)) * sin(glm::radians(m_roll)) +
-		cos(glm::radians(m_yaw)) * cos(glm::radians(m_roll));*/
-	
-	/*m_forward.x = cos(glm::radians(z)) * cos(glm::radians(x));
-	m_forward.y = sin(glm::radians(z)) * cos(glm::radians(x));
-	m_forward.z = sin(glm::radians(x));
-	m_forward = glm::normalize(m_forward);*/
-	
-	/*m_forward.x = -cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_forward.y = -sin(glm::radians(m_pitch));
-	m_forward.z = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_forward = glm::normalize(m_forward);*/
 
 	m_right = glm::normalize(glm::cross(m_forward, m_worldUp));
 	m_up = glm::normalize(glm::cross(m_right, m_forward));
