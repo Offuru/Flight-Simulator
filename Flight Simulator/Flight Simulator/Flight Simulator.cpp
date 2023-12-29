@@ -171,7 +171,7 @@ int main() {
 
 		airplane.movePlane(deltaTime);
 
-		pCamera->setPosition(airplane.getPos() + glm::vec3(0, 5.5f, -12.f));
+		pCamera->setPosition(airplane.getPos());
 
 		// input
 		// -----
@@ -217,11 +217,11 @@ int main() {
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0), lightPos);
 		model = glm::scale(model, glm::vec3(0.05f));
-		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(), model);
+		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(airplane.getPos()), model);
 
 		shadowMappingShader.use();
 		glm::mat4 projection = pCamera->GetProjectionMatrix();
-		glm::mat4 view = pCamera->GetViewMatrix();
+		glm::mat4 view = pCamera->GetViewMatrix(airplane.getPos(), true);
 		
 		shadowMappingShader.setMat4("projection", projection);
 		shadowMappingShader.setMat4("view", view);

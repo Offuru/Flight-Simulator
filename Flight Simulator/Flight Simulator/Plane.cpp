@@ -136,9 +136,9 @@ void Plane::UpdatePlaneVectors()
 	float y = glm::radians(m_pitch);
 	float z = glm::radians(m_roll);
 
-	m_forward.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_forward.x = cos(glm::radians(m_yaw));
 	m_forward.y = sin(glm::radians(m_pitch));
-	m_forward.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_forward.z = sin(glm::radians(m_yaw));
 	m_forward = glm::normalize(m_forward);
 
 	/*m_forward.x = (cos(glm::radians(m_yaw))) * sin(glm::radians(m_pitch)) * sin(glm::radians(m_roll)) -

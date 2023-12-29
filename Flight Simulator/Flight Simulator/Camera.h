@@ -7,6 +7,8 @@
 #include <glew/glew.h>
 #include <iostream>
 
+#include <glfw/glfw3.h>
+
 enum ECameraMovementType
 {
 	UNKNOWN,
@@ -27,7 +29,7 @@ public:
 	void reset(const int width, const int height);
 	void reshape(int windowWidth, int windowHeight);
 
-	const glm::mat4 GetViewMatrix() const;
+	const glm::mat4 GetViewMatrix(glm::vec3 planePos, bool thirdPerson = true) const;
 	const glm::vec3 GetPosition() const;
 	const glm::mat4 GetProjectionMatrix() const;
 

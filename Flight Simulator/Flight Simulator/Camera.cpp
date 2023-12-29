@@ -39,9 +39,18 @@ void Camera::reshape(int windowWidth, int windowHeight)
 	glViewport(0, 0, width, height);
 }
 
-const glm::mat4 Camera::GetViewMatrix() const
+const glm::mat4 Camera::GetViewMatrix(glm::vec3 planePos, bool thirdPerson) const
 {
-	return glm::lookAt(position, position + forward, up);
+	if(!thirdPerson)
+		return glm::lookAt(position, position + forward, up);
+
+
+	float distance = 25.0f;
+	float x = distance * cos(glm::radians(pitch)) * sin(glm::radians(-yaw));
+	float y = distance * sin(glm::radians(pitch));
+	float z = distance * cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+
+	return glm::lookAt(planePos + glm::vec3(-x, y, -z), planePos, glm::vec3(0.0f, 0.1f, 0.0f));
 }
 
 const glm::vec3 Camera::GetPosition() const
