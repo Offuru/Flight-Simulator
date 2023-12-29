@@ -9,7 +9,9 @@ enum class EPlaneMovementType
 	LEFT,
 	RIGHT,
 	UP,
-	DOWN
+	DOWN,
+	ROLLLEFT,
+	ROLLRIGHT
 };
 
 class Plane
@@ -32,6 +34,8 @@ public:
 	float getYaw() const;
 
 	float getPitch() const;
+
+	float getRoll() const;
 private:
 	void UpdatePlaneVectors();
 
@@ -46,9 +50,9 @@ private:
 	float m_yaw = 90.0f;
 	float m_pitch = 0.0f;
 	float m_roll = 0.0f;
+	const float rollMoveRight = 10.f;
 
 	float currentSpeed = 0.0f;
 	float currentYaw = 0.0f;
-	float currentRoll = 0.f;
 };
 

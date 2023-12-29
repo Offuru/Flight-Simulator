@@ -258,7 +258,7 @@ int main() {
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		std::cout << lightPos.y << '\n';
+		//std::cout << lightPos.y << '\n';
 
 
 	}
@@ -307,10 +307,14 @@ void processInput(GLFWwindow* window)
 		airplane.ProcessKeyboard(EPlaneMovementType::LEFT);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::RIGHT);
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::UP);
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::DOWN);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		airplane.ProcessKeyboard(EPlaneMovementType::ROLLRIGHT);
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		airplane.ProcessKeyboard(EPlaneMovementType::ROLLLEFT);
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		lightPos.y += 0.1f;
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
@@ -349,6 +353,7 @@ void renderScene(Shader& shader)
 	model = glm::rotate(model, -glm::radians(90.f), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, -glm::radians(airplane.getYaw()), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(airplane.getPitch()), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, -glm::radians(airplane.getRoll()), glm::vec3(0, 0, 1));
 
 	shader.setMat4("model", model);
 	airplane.getModel()->Draw(shader);
