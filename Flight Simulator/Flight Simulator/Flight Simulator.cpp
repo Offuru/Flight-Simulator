@@ -187,10 +187,15 @@ int main() {
 		glm::mat4 lightModelMatrix;
 
 
-		float near_plane = 1.0f, far_plane = 10.f;
-		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 75.f);
-		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-		lightModelMatrix = glm::translate(glm::mat4(1), lightPos);
+		float near_plane = 1.0f, far_plane = 1000.f;
+		lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, near_plane, far_plane);
+		glm::vec3 directionalLightPos = airplane.getPos() + glm::vec3(0.f, 5.f, 0.f);
+
+		directionalLightPos.x = std::min(std::max(lightPos.x, -25.f), 25.f) + airplane.getPos().x;
+		directionalLightPos.z = std::min(std::max(lightPos.z, -25.f), 25.f) + airplane.getPos().z;
+
+		lightView = glm::lookAt(directionalLightPos, airplane.getPos() * glm::vec3(1.0f, 0.f, 1.0f), glm::vec3(0.0, 1.0, 0.0));
+
 
 		lightSpaceMatrix = lightProjection * lightView;
 
