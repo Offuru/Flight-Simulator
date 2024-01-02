@@ -38,6 +38,7 @@ const unsigned int SCR_HEIGHT = 1200;
 
 Camera* pCamera = nullptr;
 float Ka = 0.2f;
+float lastProppelerRotation = 0.f;
 
 // Time variables to manage the speed of the camera
 float deltaTime = 0.0f;
@@ -113,13 +114,15 @@ int main() {
 	Model* SRTM = new Model(SRTMModelPath, false);
 
 
-	std::string planeModelPath2 = (currentPath + "\\models\\Plane2\\untitled.obj");
+	std::string planeModelPath2 = (currentPath + "\\models\\warplane\\warplane.obj");
 	Model* planeModel2 = new Model(planeModelPath2, false);
+
+	Model* propeller = new Model(currentPath + "\\models\\propeller\\propeller.obj");
 
 	airplane.setModel(planeModel2);
 
 	objects.push_back(SRTM);
-	objects.push_back(planeModel2);
+	objects.push_back(propeller);
 
 	LightSource sun{ currentPath + "\\models\\sun\\untitled.obj" };
 	LightSource moon{ currentPath + "\\models\\sun\\untitled.obj", true };
@@ -197,11 +200,11 @@ int main() {
 
 
 		float near_plane = 0.1f, far_plane = 1000.f;
-		lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, near_plane, far_plane);
+		lightProjection = glm::ortho(-45.0f, 45.0f, -45.0f, 45.0f, near_plane, far_plane);
 		glm::vec3 directionalLightPos = airplane.getPos() + glm::vec3(0.f, 5.f, 0.f);
 
-		directionalLightPos.x = std::min(std::max(lightPos.x, -25.f), 25.f) + airplane.getPos().x;
-		directionalLightPos.z = std::min(std::max(lightPos.z, -25.f), 25.f) + airplane.getPos().z;
+		directionalLightPos.x = std::min(std::max(lightPos.x, -20.f), 20.f) + airplane.getPos().x;
+		directionalLightPos.z = std::min(std::max(lightPos.z, -20.f), 20.f) + airplane.getPos().z;
 
 		lightView = glm::lookAt(directionalLightPos, airplane.getPos() * glm::vec3(1.0f, 0.f, 1.0f), glm::vec3(0.0, 1.0, 0.0));
 
@@ -349,23 +352,40 @@ void renderScene(Shader& shader)
 {
 	glm::mat4 model = glm::mat4();
 
+	//srtm
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(5.0f, 0.f, -2.0));
-	
 	shader.setMat4("model", model);
 	objects[0]->Draw(shader);
 
+	//plane
 	model = glm::mat4();
+	
 	model = glm::translate(model, airplane.getPos());
-	model = glm::scale(model, glm::vec3(2.f));
+	
 
 	model = glm::rotate(model, -glm::radians(90.f), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, -glm::radians(airplane.getYaw()), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(airplane.getPitch()), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, -glm::radians(airplane.getRoll()), glm::vec3(0, 0, 1));
 
+	model = glm::scale(model, glm::vec3(2.f));
 	shader.setMat4("model", model);
 	airplane.getModel()->Draw(shader);
+	
+
+	//propeller
+	lastProppelerRotation += airplane.getSpeed() / 45;
+	if (lastProppelerRotation > 360)
+		lastProppelerRotation -= 360;
+
+	
+	model = glm::translate(model, glm::vec3(0.f, -0.22f, -4.7f));
+	model = glm::rotate(model, glm::radians(lastProppelerRotation), glm::vec3(0, 0, 1));
+
+	
+	shader.setMat4("model", model);
+	objects[1]->Draw(shader);
 	//airplane.draw(shader);
 }
 

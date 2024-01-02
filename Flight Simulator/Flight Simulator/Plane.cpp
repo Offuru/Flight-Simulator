@@ -159,3 +159,8 @@ float Plane::getRoll() const
 {
 	return m_roll;
 }
+
+float Plane::getSpeed() const
+{
+	return currentSpeed;
+}

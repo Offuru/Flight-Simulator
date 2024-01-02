@@ -36,6 +36,8 @@ public:
 	float getPitch() const;
 
 	float getRoll() const;
+
+	float getSpeed() const;
 private:
 	void UpdatePlaneVectors();
 
