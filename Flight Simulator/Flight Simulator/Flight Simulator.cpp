@@ -37,7 +37,7 @@ const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 1200;
 
 Camera* pCamera = nullptr;
-
+float Ka = 0.2f;
 
 // Time variables to manage the speed of the camera
 float deltaTime = 0.0f;
@@ -47,7 +47,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yOffset);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, LightSource& sun, LightSource& moon);
 void renderScene(Shader& shader);
 void clean();
 
@@ -108,7 +108,7 @@ int main() {
 
 	Shader shadowMappingShader("ShadowMapping.vs", "ShadowMapping.fs");
 	Shader shadowMappingDepthShader("shadow_mapping_depth.vs", "shadow_mapping_depth.fs");
-	Shader lightShader((currentPath + "\\Shaders\\Lamp.vs").c_str(), (currentPath + "\\Shaders\\Lamp.fs").c_str());
+	Shader lightShader("Lamp.vs", "Lamp.fs");
 	std::string SRTMModelPath = (currentPath + "\\models\\SRTM\\untitled.obj");
 	Model* SRTM = new Model(SRTMModelPath, false);
 
@@ -121,7 +121,9 @@ int main() {
 	objects.push_back(SRTM);
 	objects.push_back(planeModel2);
 
-	LightSource light{ lightPos, 0.5f };
+	LightSource sun{ currentPath + "\\models\\sun\\untitled.obj" };
+	LightSource moon{ currentPath + "\\models\\sun\\untitled.obj", true };
+
 
 	// configure depth map FBO
 	// -----------------------
@@ -173,9 +175,16 @@ int main() {
 
 		pCamera->setPosition(airplane.getPos());
 
+		lightPos = sun.updateBySunPosition();
+		moon.updateBySunPosition();
+
+		//if sun is below the map it means that it is night so change Ka
+		Ka = std::max(0.3f, 0.000001f * sun.getPos().y);
+		Ka = std::min(1.0f, Ka);
+
 		// input
 		// -----
-		processInput(window);
+		processInput(window, sun, moon);
 		// render
 		// ------
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -187,7 +196,7 @@ int main() {
 		glm::mat4 lightModelMatrix;
 
 
-		float near_plane = 1.0f, far_plane = 1000.f;
+		float near_plane = 0.1f, far_plane = 1000.f;
 		lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, near_plane, far_plane);
 		glm::vec3 directionalLightPos = airplane.getPos() + glm::vec3(0.f, 5.f, 0.f);
 
@@ -220,9 +229,12 @@ int main() {
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 model = glm::translate(glm::mat4(1.0), lightPos);
-		model = glm::scale(model, glm::vec3(0.05f));
-		light.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(airplane), model);
+		glm::mat4 model = glm::translate(glm::mat4(1.0), sun.getPos());
+		model = glm::scale(model, glm::vec3(30000.f));
+		sun.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(airplane), model);
+		model = glm::translate(glm::mat4(1.0), moon.getPos());
+		model = glm::scale(model, glm::vec3(30000.f));
+		moon.Render(lightShader, pCamera->GetProjectionMatrix(), pCamera->GetViewMatrix(airplane), model);
 
 		shadowMappingShader.use();
 		glm::mat4 projection = pCamera->GetProjectionMatrix();
@@ -237,7 +249,7 @@ int main() {
 		shadowMappingShader.setVec3("light.position", lightPos);
 
 		shadowMappingShader.setVec3("light.color", 1.f, 1.f, 1.f);
-		shadowMappingShader.setVec3("light.ambient", 1.f, 1.f, 1.f);
+		shadowMappingShader.setVec3("light.ambient", Ka, Ka, Ka);
 		shadowMappingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 		shadowMappingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 		shadowMappingShader.setFloat("light.constant", 1.0f);
@@ -298,14 +310,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yOffset)
 	pCamera->ProcessMouseScroll((float)yOffset);
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, LightSource& sun, LightSource& moon)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::FORWARD);
-		//pCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::BACKWARD);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -321,17 +332,10 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		airplane.ProcessKeyboard(EPlaneMovementType::ROLLLEFT);
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-		lightPos.y += 0.1f;
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-		lightPos.y -= 0.1f;
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-		lightPos.x += 0.1f;
-	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-		lightPos.x -= 0.1f;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		lightPos.z += 0.1f;
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		lightPos.z -= 0.1f;
+	{
+		sun.increment();
+		moon.increment();
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		int width, height;
