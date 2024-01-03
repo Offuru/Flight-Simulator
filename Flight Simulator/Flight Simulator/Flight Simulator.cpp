@@ -39,6 +39,10 @@ const unsigned int SCR_HEIGHT = 1200;
 Camera* pCamera = nullptr;
 float Ka = 0.2f;
 float lastProppelerRotation = 0.f;
+bool insertingWheels = false;
+float currentWheelsRotation = 0.f;
+
+
 
 // Time variables to manage the speed of the camera
 float deltaTime = 0.0f;
@@ -119,10 +123,13 @@ int main() {
 
 	Model* propeller = new Model(currentPath + "\\models\\propeller\\propeller.obj");
 
+	Model* wheel = new Model(currentPath + "\\models\\wheel\\wheel.obj");
+
 	airplane.setModel(planeModel2);
 
 	objects.push_back(SRTM);
 	objects.push_back(propeller);
+	objects.push_back(wheel);
 
 	LightSource sun{ currentPath + "\\models\\sun\\untitled.obj" };
 	LightSource moon{ currentPath + "\\models\\sun\\untitled.obj", true };
@@ -292,8 +299,8 @@ int main() {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	// Ensure that the function only responds when a key is pressed or held down
-	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-
+	if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+		insertingWheels = !insertingWheels;
 	}
 }
 
@@ -339,6 +346,7 @@ void processInput(GLFWwindow* window, LightSource& sun, LightSource& moon)
 		sun.increment();
 		moon.increment();
 	}
+	
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		int width, height;
@@ -379,14 +387,40 @@ void renderScene(Shader& shader)
 	if (lastProppelerRotation > 360)
 		lastProppelerRotation -= 360;
 
-	
-	model = glm::translate(model, glm::vec3(0.f, -0.22f, -4.7f));
-	model = glm::rotate(model, glm::radians(lastProppelerRotation), glm::vec3(0, 0, 1));
+	glm::mat4 propellerModel = model;
+	propellerModel = glm::translate(propellerModel, glm::vec3(0.f, -0.22f, -4.7f));
+	propellerModel = glm::rotate(propellerModel, glm::radians(lastProppelerRotation), glm::vec3(0, 0, 1));
 
 	
-	shader.setMat4("model", model);
+	shader.setMat4("model", propellerModel);
 	objects[1]->Draw(shader);
-	//airplane.draw(shader);
+
+	if (insertingWheels)
+		currentWheelsRotation = std::min(currentWheelsRotation + 0.3f, 90.f);
+	else
+		currentWheelsRotation = std::max(currentWheelsRotation - 0.3f, 0.f);
+
+	//wheels
+	glm::mat4 wheelModel1 = model;
+	wheelModel1 = glm::translate(wheelModel1, glm::vec3(0.5f, -1.1f + currentWheelsRotation / 290, -1.f));
+	wheelModel1 = glm::rotate(wheelModel1, -glm::radians(currentWheelsRotation), glm::vec3(1, 0, 0));
+	wheelModel1 = glm::scale(wheelModel1, glm::vec3(0.1f));
+	shader.setMat4("model", wheelModel1);
+	objects[2]->Draw(shader);
+
+	glm::mat4 wheelModel2 = model;
+	wheelModel2 = glm::translate(wheelModel2, glm::vec3(-0.5f, -1.1f + currentWheelsRotation / 290, -1.f));
+	wheelModel2 = glm::rotate(wheelModel2, -glm::radians(currentWheelsRotation), glm::vec3(1, 0, 0));
+	wheelModel2 = glm::scale(wheelModel2, glm::vec3(0.1f));
+	shader.setMat4("model", wheelModel2);
+	objects[2]->Draw(shader);
+
+	glm::mat4 wheelModel3 = model;
+	wheelModel3 = glm::translate(wheelModel3, glm::vec3(0.0f, -1.f + currentWheelsRotation / 210, 2.f));
+	wheelModel3 = glm::rotate(wheelModel3, -glm::radians(currentWheelsRotation), glm::vec3(1, 0, 0));
+	wheelModel3 = glm::scale(wheelModel3, glm::vec3(0.1f));
+	shader.setMat4("model", wheelModel3);
+	objects[2]->Draw(shader);
 }
 
 void clean()
