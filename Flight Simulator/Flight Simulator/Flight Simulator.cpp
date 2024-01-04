@@ -264,7 +264,7 @@ int main() {
 		shadowMappingShader.setVec3("light.color", 1.f, 1.f, 1.f);
 		shadowMappingShader.setVec3("light.ambient", Ka, Ka, Ka);
 		shadowMappingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-		shadowMappingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+		shadowMappingShader.setVec3("light.specular", 0.0f, 0.0f, 0.0f);
 		shadowMappingShader.setFloat("light.constant", 1.0f);
 		shadowMappingShader.setFloat("light.linear", FLT_MIN);
 		shadowMappingShader.setFloat("light.quadratic", FLT_MIN);

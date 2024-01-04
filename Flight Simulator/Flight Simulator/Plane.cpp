@@ -70,11 +70,11 @@ void Plane::ProcessKeyboard(EPlaneMovementType direction)
 
 	case EPlaneMovementType::UP:
 		if (currentSpeed > 0.1f)
-			m_pitch = std::min(m_pitch + 0.03f, 45.f);
+			m_pitch = std::min(m_pitch + 0.1f, 45.f);
 		break;
 	case EPlaneMovementType::DOWN:
 		if (currentSpeed > 0.1f)
-			m_pitch = std::max(m_pitch - 0.03f, -45.f);
+			m_pitch = std::max(m_pitch - 0.1f, -45.f);
 		break;
 	
 	case EPlaneMovementType::ROLLRIGHT:
