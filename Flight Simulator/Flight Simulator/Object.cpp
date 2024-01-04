@@ -10,6 +10,11 @@ Object::Object(Model* model, glm::vec3 position, glm::vec3 scale, glm::vec3 up, 
 	this->forward = forward;
 }
 
+Object::~Object()
+{
+	delete model;
+}
+
 void Object::Render(Shader& shader) const
 {
 	glm::mat4 modelMatrix(1);
