@@ -61,10 +61,10 @@ std::string currentPath;
 std::vector<Model*> objects;
 unsigned int depthMap;
 glm::vec3 lightPos(5.0f, 163000.f, -2.0);
+Object* airport;
 
 Plane airplane({ 5.0f, 1630.f, -2.0 });
 glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
-std::vector<Object*> _objects;
 
 
 int main() {
@@ -170,13 +170,10 @@ int main() {
 
 	glEnable(GL_CULL_FACE);
 
-	Object* runway = new Object();
-	runway->model = new Model(currentPath + "\\models\\Airport\\airport.obj");
-	runway->position = glm::vec3(0, 1700, 0);
-
-	Object* plane = new Object();
-	plane->model = new Model(currentPath + "\\models\\Plane2\\untitled.obj");
-	plane->position = glm::vec3(5.0f, 1730.f, -2.0);
+	airport = new Object();
+	airport->model = new Model(currentPath + "\\models\\Airport2\\airport.obj");
+	airport->position = glm::vec3(0, 1605, 0);
+	airport->scale = glm::vec3(5.f);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -283,9 +280,6 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
 		renderScene(shadowMappingShader);
-
-		runway->Render(shadowMappingShader); //textures are currently buggy, find another airport later
-		plane->Render(shadowMappingShader);
 
 		skybox.Render(skyboxShader, pCamera, airplane);
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -427,6 +421,9 @@ void renderScene(Shader& shader)
 	wheelModel3 = glm::scale(wheelModel3, glm::vec3(0.1f));
 	shader.setMat4("model", wheelModel3);
 	objects[2]->Draw(shader);
+
+	//airport
+	airport->Render(shader);
 }
 
 void clean()
@@ -435,4 +432,5 @@ void clean()
 		delete obj;
 
 	delete pCamera;
+	delete airport;
 }
