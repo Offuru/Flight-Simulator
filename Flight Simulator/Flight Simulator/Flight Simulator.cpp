@@ -139,6 +139,11 @@ int main() {
 	LightSource sun{ currentPath + "\\models\\sun\\untitled.obj" };
 	LightSource moon{ currentPath + "\\models\\sun\\untitled.obj", true };
 
+	airport = new Object();
+	airport->model = new Model(currentPath + "\\models\\Airport\\airport.obj");
+	airport->position = glm::vec3(0, 1605, 70);
+	airport->scale = glm::vec3(5.f);
+
 
 	// configure depth map FBO
 	// -----------------------
@@ -169,11 +174,6 @@ int main() {
 	shadowMappingShader.setInt("shadowMap", 1);
 
 	glEnable(GL_CULL_FACE);
-
-	airport = new Object();
-	airport->model = new Model(currentPath + "\\models\\Airport2\\airport.obj");
-	airport->position = glm::vec3(0, 1605, 0);
-	airport->scale = glm::vec3(5.f);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -274,8 +274,6 @@ int main() {
 		shadowMappingShader.setMat4("projection", projection);
 		shadowMappingShader.setMat4("view", view);
 
-		
-
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
@@ -366,6 +364,10 @@ void renderScene(Shader& shader)
 	shader.setMat4("model", model);
 	objects[0]->Draw(shader);
 
+
+	//airport
+	airport->Render(shader);
+
 	//plane
 	model = glm::mat4();
 	
@@ -421,9 +423,6 @@ void renderScene(Shader& shader)
 	wheelModel3 = glm::scale(wheelModel3, glm::vec3(0.1f));
 	shader.setMat4("model", wheelModel3);
 	objects[2]->Draw(shader);
-
-	//airport
-	airport->Render(shader);
 }
 
 void clean()
