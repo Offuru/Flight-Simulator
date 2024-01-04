@@ -51,6 +51,9 @@
     <ClCompile Include="spa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -92,6 +95,9 @@
     <ClInclude Include="spa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="PhongLight.vs">
@@ -116,6 +122,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="shadow_mapping_depth.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Skybox.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Skybox.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

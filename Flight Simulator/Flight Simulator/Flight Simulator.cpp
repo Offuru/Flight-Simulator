@@ -28,6 +28,7 @@
 #include "LightSource.h"
 #include "Plane.h"
 #include "Object.h"
+#include "Skybox.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -106,6 +107,10 @@ int main() {
 	glm::vec3 initialCameraPosition = glm::vec3(5.0f, 1630.f, -2.0);
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
 	
+	Skybox skybox(currentPath + "\\models\\skybox\\");
+	Shader skyboxShader("Skybox.vs", "Skybox.fs");
+
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
@@ -282,6 +287,7 @@ int main() {
 		runway->Render(shadowMappingShader); //textures are currently buggy, find another airport later
 		plane->Render(shadowMappingShader);
 
+		skybox.Render(skyboxShader, pCamera, airplane);
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
