@@ -16,8 +16,14 @@ void Skybox::Render(Shader& shader, Camera* camera, Plane& plane)
     shader.use();
     glm::mat4 view = glm::mat4(glm::mat3(camera->GetViewMatrix(plane)));
     glm::mat4 projection = camera->GetProjectionMatrix();
+    glm::mat4 model(1);
+
+    static float currentRotation;
+    model = glm::rotate(model, glm::radians(currentRotation += 0.01f), glm::vec3(0, 1, 0));
+
     shader.setMat4("view", view);
-    shader.setMat4("projection",projection);
+    shader.setMat4("projection", projection);
+    shader.setMat4("model", model);
     vao.Bind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture);

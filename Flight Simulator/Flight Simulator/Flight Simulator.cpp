@@ -285,7 +285,7 @@ int main() {
 			daySkybox.Render(skyboxShader, pCamera, airplane);
 		else
 			nightSkybox.Render(skyboxShader, pCamera, airplane);
-		//skybox.Render(skyboxShader, pCamera, airplane);
+		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
