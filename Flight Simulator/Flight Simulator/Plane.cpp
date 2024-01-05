@@ -150,11 +150,19 @@ void Plane::UpdatePlaneVectors()
 
 	if (runwayx1 <= m_position.x && m_position.x <= runwayx2 &&
 		runwayz1 <= m_position.z && m_position.z <= runwayz2 &&
-		abs(runwayy - m_position.y) < 10 && glfwGetTime() - takeoffTimer >= takeoffCooldown)
+		abs(runwayy - m_position.y) < 10)
 	{
-		grounded = true;
-		m_position.y = runwayy - 0.5;
-		m_pitch = 0;
+		if(glfwGetTime() - takeoffTimer >= takeoffCooldown)
+		{
+			grounded = true;
+			m_position.y = runwayy - 0.5;
+			m_pitch = 0;
+		}
+	}
+	else
+	{
+		if (grounded)
+			grounded = false;
 	}
 
 	float x = glm::radians(m_yaw);
