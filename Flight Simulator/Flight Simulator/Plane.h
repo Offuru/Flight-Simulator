@@ -61,6 +61,6 @@ private:
 	bool grounded;
 
 	float takeoffTimer;
-	float takeoffCooldown = 3.f;
+	float takeoffCooldown = 2.f;
 };
 
