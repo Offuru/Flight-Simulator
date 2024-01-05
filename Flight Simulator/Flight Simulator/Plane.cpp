@@ -42,7 +42,7 @@ void Plane::ProcessKeyboard(EPlaneMovementType direction)
 	switch (direction)
 	{
 	case EPlaneMovementType::FORWARD:
-		currentSpeed = std::min(currentSpeed + 0.4f, 100.f);
+		currentSpeed = std::min(currentSpeed + 0.2f, 100.f);
 		break;
 	case EPlaneMovementType::BACKWARD:
 		currentSpeed = std::max(currentSpeed - 0.1f, 0.f);

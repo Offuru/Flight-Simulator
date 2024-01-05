@@ -62,8 +62,8 @@ std::vector<Model*> objects;
 unsigned int depthMap;
 glm::vec3 lightPos(5.0f, 163000.f, -2.0);
 Object* airport;
-
-Plane airplane({ 5.0f, 1630.f, -2.0 });
+// 1568.5 1554.92
+Plane airplane({ -11475.4, 1769.68, 815.435 });
 glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
 
 
@@ -141,8 +141,8 @@ int main() {
 
 	airport = new Object();
 	airport->model = new Model(currentPath + "\\models\\Airport\\airport.obj");
-	airport->position = glm::vec3(0, 1605, 70);
-	airport->scale = glm::vec3(5.f);
+	airport->position = glm::vec3(-11859.1, 1755.92, 1668.69);
+	airport->scale = glm::vec3(100.f);
 
 
 	// configure depth map FBO
@@ -293,7 +293,7 @@ int main() {
 		glfwPollEvents();
 		//std::cout << lightPos.y << '\n';
 
-
+		std::cout << airplane.getPos().x << " " << airplane.getPos().y << " " << airplane.getPos().z << '\n';
 	}
 
 	clean();
