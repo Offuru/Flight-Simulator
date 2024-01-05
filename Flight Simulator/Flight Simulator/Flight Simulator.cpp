@@ -34,8 +34,8 @@
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
 
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 1200;
+unsigned int SCR_WIDTH;
+unsigned int SCR_HEIGHT;
 
 Camera* pCamera = nullptr;
 float Ka = 0.2f;
@@ -63,10 +63,8 @@ unsigned int depthMap;
 glm::vec3 lightPos(5.0f, 163000.f, -2.0);
 Object* airport;
 // 1568.5 1554.92
-Plane airplane({ -11100, 1770, 650 });
+Plane airplane({ -11000, 1770, 650 });
 glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
-
-
 
 int main() {
 	wchar_t buffer[MAX_PATH];
@@ -84,6 +82,13 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_DECORATED, NULL);
+
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+	SCR_WIDTH = mode->width;
+	SCR_HEIGHT = mode->height;
 
 	// glfw window creation
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Flight Simulator", NULL, NULL);
@@ -394,7 +399,7 @@ void renderScene(Shader& shader)
 	
 
 	//propeller
-	lastProppelerRotation += airplane.getSpeed() / 45;
+	lastProppelerRotation += airplane.getSpeed() / 2.5;
 	if (lastProppelerRotation > 360)
 		lastProppelerRotation -= 360;
 
