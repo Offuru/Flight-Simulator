@@ -53,7 +53,7 @@ private:
 	float m_yaw = 90.0f;
 	float m_pitch = 0.0f;
 	float m_roll = 0.0f;
-	const float rollMoveRight = 0.1f;
+	const float rollMoveRight = 0.5f;
 
 	float currentSpeed = 0.0f;
 	float currentYaw = 0.0f;

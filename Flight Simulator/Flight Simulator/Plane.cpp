@@ -127,8 +127,8 @@ void Plane::movePlane(float deltaTime)
 
 			if ((m_roll >= 0 && m_roll <= 180.f) ||
 				(m_roll >= -360.f && m_roll <= -180.0f))
-				m_roll -= 0.1f, m_yaw += 0.03;
-			else m_roll += 0.1f, m_yaw -= 0.03;
+				m_roll -= 0.2f, m_yaw += 0.1;
+			else m_roll += 0.2f, m_yaw -= 0.1;
 
 			if (m_roll >= 360 || m_roll <= -360)
 				m_roll = 0;

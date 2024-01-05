@@ -49,7 +49,7 @@ const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 	float planeYaw = plane.getYaw() - 90.f;
 	float planePitch = plane.getPitch();
 
-	if (currentTime - lastMouseMovement >= 2.f)
+	if (currentTime - lastMouseMovement >= 4.f) // after x seconds the camera returns to it's standard position
 	{
 		//reverting camera pos
 		if (yaw != planeYaw)
