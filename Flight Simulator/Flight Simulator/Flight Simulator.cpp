@@ -63,8 +63,9 @@ unsigned int depthMap;
 glm::vec3 lightPos(5.0f, 163000.f, -2.0);
 Object* airport;
 // 1568.5 1554.92
-Plane airplane({ -11475.4, 1769.68, 815.435 });
+Plane airplane({ -11100, 1770, 650 });
 glm::vec3 m_currPos = { 5.0f, 1630.f, -2.0 };
+
 
 
 int main() {

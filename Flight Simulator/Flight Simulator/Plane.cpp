@@ -4,6 +4,7 @@ Plane::Plane(const glm::vec3& initialPos, Model* model)
 {
 	m_position = initialPos;
 	m_plane = model;
+	grounded = true;
 
 	UpdatePlaneVectors();
 }
@@ -71,6 +72,11 @@ void Plane::ProcessKeyboard(EPlaneMovementType direction)
 	case EPlaneMovementType::UP:
 		if (currentSpeed > 0.1f)
 			m_pitch = std::min(m_pitch + 0.1f, 45.f);
+		if(grounded)
+		{
+			grounded = false;
+			takeoffTimer = glfwGetTime();
+		}
 		break;
 	case EPlaneMovementType::DOWN:
 		if (currentSpeed > 0.1f)
@@ -111,7 +117,8 @@ void Plane::movePlane(float deltaTime)
 	if (currentSpeed > 0.0f)
 	{
 		m_position += m_up * velocity * m_pitch;
-		m_pitch -= 0.004f;
+		if(!grounded)
+			m_pitch -= 0.004f;
 
 
 		if (m_roll != 0.f)
@@ -137,6 +144,19 @@ void Plane::movePlane(float deltaTime)
 
 void Plane::UpdatePlaneVectors()
 {
+	float runwayz1 = 650, runwayz2 = 2650;
+	float runwayx1 = -11100, runwayx2 = -10960;
+	float runwayy = 1770;
+
+	if (runwayx1 <= m_position.x && m_position.x <= runwayx2 &&
+		runwayz1 <= m_position.z && m_position.z <= runwayz2 &&
+		abs(runwayy - m_position.y) < 10 && glfwGetTime() - takeoffTimer >= takeoffCooldown)
+	{
+		grounded = true;
+		m_position.y = runwayy - 0.5;
+		m_pitch = 0;
+	}
+
 	float x = glm::radians(m_yaw);
 	float y = glm::radians(m_pitch);
 	float z = glm::radians(m_roll);

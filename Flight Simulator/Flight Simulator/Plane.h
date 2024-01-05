@@ -1,5 +1,6 @@
 #pragma once
 #include "Model.h"
+#include "glfw/glfw3.h"
 
 enum class EPlaneMovementType
 {
@@ -56,5 +57,10 @@ private:
 
 	float currentSpeed = 0.0f;
 	float currentYaw = 0.0f;
+
+	bool grounded;
+
+	float takeoffTimer;
+	float takeoffCooldown = 3.f;
 };
 
