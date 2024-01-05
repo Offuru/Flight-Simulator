@@ -67,7 +67,7 @@ const glm::mat4 Camera::GetViewMatrix(Plane& plane, bool thirdPerson)
 			if (std::abs(yaw - planeYaw) < 0.5 || std::abs(yaw + planeYaw + 180) < 0.5)
 				yaw = planeYaw;
 		}
-		std::cout << planeYaw << " " << yaw << '\n';
+		//std::cout << planeYaw << " " << yaw << '\n';
 
 		if (pitch != -planePitch)
 		{

@@ -108,7 +108,6 @@ int main() {
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, initialCameraPosition);
 	
 	Skybox daySkybox(currentPath + "\\models\\DaySkybox\\");
-	Skybox nightSkybox(currentPath + "\\models\\NightSkybox\\");
 	Shader skyboxShader("Skybox.vs", "Skybox.fs");
 
 
@@ -281,10 +280,13 @@ int main() {
 		renderScene(shadowMappingShader);
 
 
-		if (lightPos.y > 100)
-			daySkybox.Render(skyboxShader, pCamera, airplane);
+		skyboxShader.use();
+
+		if(lightPos.y >= 0)
+			skyboxShader.setVec3("daytimeColor", glm::vec3(std::min(lightPos.y / 999999 * 2 + 0.05f, 1.f)));
 		else
-			nightSkybox.Render(skyboxShader, pCamera, airplane);
+			skyboxShader.setVec3("daytimeColor", glm::vec3(0.05f));
+		daySkybox.Render(skyboxShader, pCamera, airplane);
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
